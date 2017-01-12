@@ -40,6 +40,8 @@ page.open(address, function (status) {
 
 		window.setTimeout(function () {
 			page.render(output);
+            // var base64 = page.renderBase64('PNG');
+            // console.log('base64: ', base64);
 			phantom.exit();
 		}, 200);
     }
