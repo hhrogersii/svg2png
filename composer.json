@@ -1,0 +1,16 @@
+{
+    "require": {
+        "jakoch/phantomjs-installer": "2.1.1-p08"
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "PhantomInstaller\\Installer::installPhantomJS"
+        ],
+        "post-update-cmd": [
+            "PhantomInstaller\\Installer::installPhantomJS"
+        ]
+    }
+}
