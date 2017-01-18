@@ -56,17 +56,19 @@ $chartConfig = array(
     var t0 = new Date();
     var i0 = 0;
     var interations = 100;
+    var total = 0;
     var pre = document.getElementById('pre');
 
     var ajax = function() {
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://localhost:9494/', true);
+        xhr.open('POST', 'http://localhost:8910/', true);
         xhr.onreadystatechange = function(response) {
             if (xhr.readyState != 4 || xhr.status != 200) {
                 return;
             }
             var t1 = new Date();
             var t2 = t1 - t0;
+            total += t2;
             if (i0 % 10 === 0) {
                 pre.innerHTML += '| ';
             }
@@ -83,6 +85,8 @@ $chartConfig = array(
             i0 += 1;
             if (i0 < interations) {
               ajax();
+            } else {
+                pre.innerHTML += ("{Average: " + (total/interations) + "}");
             }
         };
         xhr.send(JSON.stringify(params));

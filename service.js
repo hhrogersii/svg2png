@@ -1,8 +1,8 @@
-var port = 9494;
+var port = 8910;
 var server = require('webserver').create();
 // var fs = require('fs');
 // var url = 'file://' + fs.absolute('./chart.html');
-var url = 'chart.html';
+var url = 'resources/chart.html';
 
 var chartRender = function(config, datum) {
         // Define chart model & class name
@@ -59,7 +59,7 @@ var service = server.listen(port, function(request, response) {
         };
     page.zoomFactor = 2;
 
-    page.open(url, function (status) {
+    page.open(url, function(status) {
 
         if (status !== 'success') {
             handleError(500, 'Unable to load chart page.');
@@ -74,15 +74,17 @@ var service = server.listen(port, function(request, response) {
             return;
         }
 
-        // Everything's A-OK
-        response.statusCode = 200;
-        // Send encoded image
-        response.write(page.renderBase64('PNG'));
-        // Close to complete request
-        response.close();
+        window.setTimeout(function() {
+            // Everything's A-OK
+            response.statusCode = 200;
+            // Send encoded image
+            response.write(page.renderBase64('PNG'));
+            // Close to complete request
+            response.close();
 
-        // Close to release memory
-        page.close();
+            // Close to release memory
+            page.close();
+        }, 50);
     });
 });
 

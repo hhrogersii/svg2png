@@ -53,8 +53,8 @@ if (isset($headers['CHART_CONFIG'])) {
       background-color: #eef5ff;
     }
     #chart_export {
-      width: 600px;
-      height: 600px;
+      width: 720px;
+      height: 480px;
     }
   </style>
 </head>
@@ -68,6 +68,7 @@ if (isset($headers['CHART_CONFIG'])) {
 <script src="../resources/nv.d3.min.js"></script>
 
 <script type="text/javascript">
+window.onload = function() {
   // Define define config and data variables
   var chartConfig = <?php echo json_encode($chartConfig); ?>;
   var reportDatum = <?php echo $reportDatum; ?>;
@@ -90,6 +91,7 @@ if (isset($headers['CHART_CONFIG'])) {
   d3.select('#chart_export svg')
     .datum(reportDatum)
     .call(chartModel);
+};
 </script>
 </body>
 </html>

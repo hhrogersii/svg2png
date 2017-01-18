@@ -46,7 +46,7 @@ $chartConfig = array(
         REPORT_DATUM: <?php echo json_encode($reportDatum); ?>,
         CHART_CONFIG: <?php echo json_encode($chartConfig); ?>
     };
-    var url = 'http://localhost:9494/';
+    var url = 'http://localhost:8910/';
     var xhr = new XMLHttpRequest();
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Accept', 'text/plain');
