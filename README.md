@@ -33,14 +33,28 @@ As a *service* the PhantomJS [web server module](http://phantomjs.org/api/webser
 phantomjs service.js
 ```
 
-## Testing
+## Debugging
+The `service.js` script can be debugged interactively by launching with:
+```sh
+phantomjs --remote-debugger-port=9000 --remote-debugger-autorun=yes ./service.js
+```
+Open a browser to `http://localhost:9000/` and click on the `service.js` item. The browser debug environment is similar to Chrome Web Tools but double clicking might be necessary.
 
+## Docker
+The service can be dockerized by running:
+```sh
+docker build -t svg2png-dock .
+docker run -p 8910:8910 svg2png-dock
+```
+The docker image is built with https://hub.docker.com/r/wernight/phantomjs/ which has over 1 million pulls.
+
+## Testing
 Test the *service* by:
 
 1. start the service on the remote host: `phantomjs ./service.js`
 2. open a browser at: `http://localhost/svg2png/test/service.php`
-3. the test chart config and report data parameters are defined and a AJAX POST is made to: `http://remotehost:9494/`
-4. PhantomJS executes the listen on port 9494 callback script defined in: `./service.js`
+3. the test chart config and report data parameters are defined and a AJAX POST is made to: `http://remotehost:8910/`
+4. PhantomJS executes the listen on port 8910 callback script defined in: `./service.js`
   * the post parameters are processed and referenced in an onloadcomplete callback of the render page: `./chart.html`
     - the render page loads libraries and resources and completes
     - the onloadcomplete callback then executes D3 code to render the chart in the context of the test page
@@ -56,21 +70,21 @@ A load testing script `test/load.php` executes 100 POST requests to the service 
 
 <img src="test/load.png">
 
-On local test runs the average response time was 76.63 ms.
+On local test runs the average response time was ~186 ms.
 
-### Response
+## Response
 The *service* returns the captured chart image as a Base64 encoded string back to the client application.
 
-### Request
-The *service* expects a POST request with two (for now) data parameters to the `9494` port (configurable) of the service address:
+## Request
+The *service* expects a POST request with two (for now) data parameters to the `8910` port (configurable) of the service address:
 - `CHART_CONFIG` a JSON object that contains a required chart `type` property and any needed method names to call and values to apply to the D3 chart model as key/value pairs (e.g., `showTitle: true`).
 - `REPORT_DATUM` a JSON object that contains the report data as normally constructed in the `Sugar` client application with `properties` and `data` properties.
 - ~~`POSTBACK`~~ not yet implemented but expected to post back the Base64 encoded image to the client application.
 
-#### Post parameters
+### Post parameters
 A Swagger.io service definition file is available: [definition.swagger.json](definition.swagger.json).
 
-##### Chart config
+#### Chart config
 The Chart.php page expects a JSON CHART_CONFIG POST parameter that sets the chart type and calls any number of optional methods to configure the chart model. Every chart type has a number of chart config options. Refer to the `include/SugarCharts/nvd3/js/sugarCharts.js` file to see common options for each chart type.
 
 | Method | Required | Acceptable Values | Description |
@@ -103,7 +117,7 @@ To set these options, add a key/value pair with the key equal to the name of the
 }
 ```
 
-##### Report data
+#### Report data
 The the `include/SugarCharts/nvd3/js/sugarCharts.js` file for the expected report data structure. Here is the datum used for the POC.
 
 ```json
