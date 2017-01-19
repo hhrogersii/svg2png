@@ -1,0 +1,354 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Report to PNG",
+        "description": "Render a dynamically formatted SVG chart written in D3 using a headless browser, then capture as an PNG image and return encoded in Base64.",
+        "version": "0.0.1"
+    },
+    "host": "report2png.sugarcrm.com:8910",
+    "schemes": [
+        "https"
+    ],
+    "basePath": "/v1",
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "text/plain"
+    ],
+    "paths": {
+        "/pie": {
+            "post": {
+                "summary": "Capture pie chart image.",
+                "description": "This entry point is specically for the pie chart type.",
+                "tags": [
+                    "Chart",
+                    "Pie",
+                    "Value Data"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/PieChartRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Base64 encoded image.",
+                        "schema": {
+                            "$ref": "#/definitions/ImageResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Dimension": {
+            "description": "Value represents the series index (Z of 1..x), group index (Z of 1..x), or histogram index (Z of -x..x) or dimensional value (date-time or numeric ranges).",
+            "type": "integer",
+            "format": "int32"
+        },
+        "Measure": {
+            "description": "Value represents the domain value or measure (typically Q of -y..y).",
+            "type": "number",
+            "format": "float"
+        },
+        "AbstractReportData": {
+            "description": "Metadata about the data being visualized.",
+            "properties": {
+                "properties": {
+                    "description": "Don't let this triple 'properties' throw you off. AbstractReportData has an object property called 'properties' which has the properties of...",
+                    "properties": {
+                        "title": {
+                            "description": "Explanitory statement about content of chart.",
+                            "type": "string"
+                        },
+                        "summary": {
+                            "description": "A short summary of the informational story.",
+                            "type": "string"
+                        },
+                        "source": {
+                            "description": "The original source of the data (DOI).",
+                            "type": "string"
+                        },
+                        "lastUpdated": {
+                            "description": "When the source data was last updated.",
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "xDataType": {
+                            "description": "The data type of the dimension or x-axis.",
+                            "type": "string",
+                            "default": "ordinal"
+                        },
+                        "yDataType": {
+                            "description": "The data type of the measure or y-axis.",
+                            "type": "string",
+                            "default": "numeric"
+                        }
+                    }
+                }
+            }
+        },
+        "ObjectValues": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/AbstractReportData"
+                },
+                {
+                    "properties": {
+                        "data": {
+                            "description": "Data series values represented as arrays of objects.",
+                            "type": "array",
+                            "items": {
+                                "properties": {
+                                    "key": {
+                                        "type": "string"
+                                    },
+                                    "values": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "x": {
+                                                    "$ref": "#/definitions/Dimension"
+                                                },
+                                                "y": {
+                                                    "$ref": "#/definitions/Measure"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "ArrayValues": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/AbstractReportData"
+                },
+                {
+                    "properties": {
+                        "data": {
+                            "description": "Data series values represented as array of arrays.",
+                            "type": "array",
+                            "items": {
+                                "properties": {
+                                    "key": {
+                                        "type": "string"
+                                    },
+                                    "values": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "array",
+                                            "items": {
+                                                "allOf": [
+                                                    {
+                                                        "$ref": "#/definitions/Dimension"
+                                                    },
+                                                    {
+                                                        "$ref": "#/definitions/Measure"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "ValueValues": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/AbstractReportData"
+                },
+                {
+                    "properties": {
+                        "data": {
+                            "description": "Data series value represented as a single value.",
+                            "type": "array",
+                            "items": {
+                                "properties": {
+                                    "key": {
+                                        "type": "string"
+                                    },
+                                    "value": {
+                                        "$ref": "#/definitions/Measure"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "AbstractChartConfig": {
+            "description": "Chart configuration method names and values for all chart types.",
+            "required": [
+                "type"
+            ],
+            "properties": {
+                "type": {
+                    "description": "The chart model type.",
+                    "type": "string",
+                    "enum": [
+                        "Pie",
+                        "Gauge",
+                        "Mulitbar",
+                        "Line",
+                        "Funnel"
+                    ]
+                },
+                "colorData": {
+                    "description": "The color definition procedure.",
+                    "type": "string",
+                    "enum": [
+                        "default",
+                        "data",
+                        "classes"
+                    ],
+                    "default": "default"
+                },
+                "showTitle": {
+                    "description": "To show the chart title or not.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "showLabels": {
+                    "description": "To show the chart labels or not.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "showLegend": {
+                    "description": "To show the chart legend or not.",
+                    "type": "boolean",
+                    "default": true
+                },
+                "showControls": {
+                    "description": "To show the chart controls or not.",
+                    "type": "boolean",
+                    "default": false
+                },
+                "direction": {
+                    "description": "To render chart strings in LTR or RTL.",
+                    "type": "string",
+                    "enum": [
+                        "LTR",
+                        "RTL"
+                    ],
+                    "default": "LTR"
+                }
+            }
+        },
+        "PieChartConfig": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/AbstractChartConfig"
+                },
+                {
+                    "properties": {
+                        "donut": {
+                            "description": "To show the pie chart with a hole in the middle.",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "donutRatio": {
+                            "description": "The ratio of the hole diameter to the pie diameter.",
+                            "type": "number",
+                            "format": "float",
+                            "default": 0.5,
+                            "minimum": 0,
+                            "maximum": 1,
+                            "exclusiveMinimum": true,
+                            "exclusiveMaximum": true
+                        },
+                        "hole": {
+                            "description": "The text to render inside the donut hole.",
+                            "type": "string"
+                        },
+                        "maxRadius": {
+                            "description": "The maximum radius of the pie.",
+                            "type": "integer"
+                        },
+                        "minRadius": {
+                            "description": "The minimum radius of the pie.",
+                            "type": "integer"
+                        },
+                        "rotateDegrees": {
+                            "description": "The rotation of the pie in degrees.",
+                            "type": "number",
+                            "format": "integer",
+                            "default": 0,
+                            "minimum": 0,
+                            "maximum": 360,
+                            "exclusiveMinimum": false,
+                            "exclusiveMaximum": true
+                        },
+                        "arcDegrees": {
+                            "description": "The angle of the pie arc in degrees.",
+                            "type": "number",
+                            "format": "integer",
+                            "default": 360,
+                            "minimum": 0,
+                            "maximum": 360,
+                            "exclusiveMinimum": true,
+                            "exclusiveMaximum": false
+                        },
+                        "pieLabelsOutside": {
+                            "description": "To show the pie chart labels outside the pie with leaders or inside.",
+                            "type": "boolean",
+                            "default": true
+                        }
+                    }
+                }
+            ]
+        },
+        "PieChartRequest": {
+            "description": "POST parameters.",
+            "properties": {
+                "chartConfig": {
+                    "$ref": "#/definitions/PieChartConfig"
+                },
+                "reportData": {
+                    "$ref": "#/definitions/ValueValues"
+                }
+            }
+        },
+        "ImageResponse": {
+            "description": "Base64 encoded image.",
+            "type": "string",
+            "format": "byte"
+        },
+        "Error": {
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "fields": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
