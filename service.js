@@ -32,6 +32,11 @@ var service = server.listen(port, function(request, response) {
     var post = JSON.parse(request.post);
     var chartConfig = post.CHART_CONFIG;
     var reportDatum = post.REPORT_DATUM;
+
+    var zoom = chartConfig.zoom || 1;
+    var width = chartConfig.width || (720 * zoom);
+    var height = chartConfig.height || (480 * zoom);
+
     var page = require('webpage').create();
     var handleError = function(code, msg) {
             response.statusCode = code;
@@ -50,15 +55,18 @@ var service = server.listen(port, function(request, response) {
     page.clipRect = {
             top: 0,
             left: 0,
-            width: 1440,
-            height: 960
+            width: width,
+            height: height
         };
+    // Clip * zoom
     page.viewportSize = {
-            width: 1440,
-            height: 960
+            width: width,
+            height: height
         };
-    page.zoomFactor = 2;
+    // A zoom factor of 1 for screen display
+    page.zoomFactor = zoom;
 
+    // Load the chart page
     page.open(url, function(status) {
 
         if (status !== 'success') {
@@ -67,13 +75,15 @@ var service = server.listen(port, function(request, response) {
         }
 
         try {
-            // Render chart with config and data
+            // Render chart with config and data inside page context
             page.evaluate(chartRender, chartConfig, reportDatum);
         } catch(e) {
             handleError(500, e.message);
             return;
         }
 
+        // Need to wait a bit to allow CSS to catch up
+        // thanks web fonts
         window.setTimeout(function() {
             // Everything's A-OK
             response.statusCode = 200;

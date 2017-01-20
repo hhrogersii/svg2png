@@ -15,6 +15,9 @@ $reportDatum = json_decode(file_get_contents('../resources/pie_data.json'));
 // Defined in Reporter instance or in SugarCharts
 $chartConfig = array(
     'type' => 'pie',
+    'width' => 720,
+    'height' => 480,
+    'zoom' => 1,
     'direction' => 'ltr',
     'showTitle' => true,
     'showLegend' => true,

@@ -216,6 +216,18 @@
                         "Funnel"
                     ]
                 },
+                "width": {
+                    "description": "The width of the chart container.",
+                    "type": "integer"
+                },
+                "height": {
+                    "description": "The height of the chart container.",
+                    "type": "integer"
+                },
+                "zoom": {
+                    "description": "The zoom factor of the page viewport.",
+                    "type": "integer"
+                },
                 "colorData": {
                     "description": "The color definition procedure.",
                     "type": "string",
