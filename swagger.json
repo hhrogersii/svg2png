@@ -5,7 +5,7 @@
         "description": "Render a dynamically formatted SVG chart written in D3 using a headless browser, then capture as an PNG image and return encoded in Base64.",
         "version": "0.0.1"
     },
-    "host": "report2png.sugarcrm.com:8910",
+    "host": "svg2png.arch.sugarcrm.io",
     "schemes": [
         "https"
     ],
@@ -22,9 +22,7 @@
                 "summary": "Capture pie chart image.",
                 "description": "This entry point is specically for the pie chart type.",
                 "tags": [
-                    "Chart",
-                    "Pie",
-                    "Value Data"
+                    "Pie Chart"
                 ],
                 "parameters": [
                     {

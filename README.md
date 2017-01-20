@@ -1,10 +1,18 @@
-# PhantomJS SVG to PNG Service
+# Sugar Report to PNG Service
 
 ## Overview
-A *service* that will generate a Base64 encoded PNG image file from a D3 chart using [PhantomJS](|http://phantomjs.org/).
+A *service* that will generate a Base64 encoded PNG image file from a D3 chart using [PhantomJS](|http://phantomjs.org/) given Report data from SugarCRM.
+
+[Command Line](#basic-usage-from-command-line) | 
+[Web Server Module](#phantomjs-web-server-module) | 
+[Debugging](#debugging) | 
+[Docker](#docker) | 
+[Testing](#testing) | 
+[Response](#response) | 
+[Request](#request) 
 
 ## Installation
-The PhantomJS binary can be installed globally with [Homebrew](http://brew.sh/) or locally with [Composer](https://github.com/jakoch/phantomjs-installer).
+The PhantomJS binary can be installed globally with [Homebrew](http://brew.sh/) or locally with [Composer](https://github.com/jakoch/phantomjs-installer). Or see [Docker](#docker) section below.
 
 ```sh
 // Use homebrew to install PhantomJS globally
@@ -15,16 +23,16 @@ php composer.phar install
 ```
 
 ## Basic usage from command line
-During development it is helpful to verify the successful phantomjs capture of the various Sugar NVD3 chart types that will be tested via the service. The service source URI `test/chart.php` can be edited as needed and called directly from the command lin. An option will be added later to provide the chart config as a JSON object.
+During development it is helpful to verify the successful PhantomJS capture of the various Sugar NVD3 chart types that will be tested via the service. PhantomJS can be used from the command line using the same script that is used in the service to generate a new PNG image of the chart in the project directory.
 
 ```sh
 // [./bin/]phantomjs [script] [source_url] [selector] [target_file]
 $ phantomjs ./test/domshot.js http://localhost/svg2png/test/chart.php .nv-chart pie.png
 ```
 
-There should now be a new PNG image of the chart in the project directory.
-
 <a href="pie.png" target="_blank"><img src="pie.png" width="300" height="300"></a>
+
+Also, you can preview the chart by opening the page `test/chart.php` which can be edited as needed for testing. An option will be added later to provide the chart config as a JSON object. See the [Testing](#testing) section below for details on calling the PhantomJS service from a test page.
 
 ## PhantomJS web server module
 As a *service* the PhantomJS [web server module](http://phantomjs.org/api/webserver/) based on the embedded [Mongoose](https://www.cesanta.com/) web server is deployed as a long running process.
@@ -82,7 +90,7 @@ The *service* expects a POST request with two (for now) data parameters to the `
 - ~~`POSTBACK`~~ not yet implemented but expected to post back the Base64 encoded image to the client application.
 
 ### Post parameters
-A Swagger.io service definition file is available: [definition.swagger.json](definition.swagger.json).
+A [Swagger.io](http://swagger.io) service definition file is available: [swagger.json](swagger.json).
 
 #### Chart config
 The Chart.php page expects a JSON CHART_CONFIG POST parameter that sets the chart type and calls any number of optional methods to configure the chart model. Every chart type has a number of chart config options. Refer to the `include/SugarCharts/nvd3/js/sugarCharts.js` file to see common options for each chart type.
