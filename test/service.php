@@ -49,6 +49,7 @@ $chartConfig = array(
         REPORT_DATUM: <?php echo json_encode($reportDatum); ?>,
         CHART_CONFIG: <?php echo json_encode($chartConfig); ?>
     };
+    // var url = 'https://svg2png.arch.sugarcrm.io/v1/pie';
     var url = 'http://localhost:8910/';
     var xhr = new XMLHttpRequest();
     xhr.open('POST', url, true);

@@ -64,7 +64,9 @@ $chartConfig = array(
 
     var ajax = function() {
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://localhost:8910/', true);
+        // var url = 'https://svg2png.arch.sugarcrm.io/v1/pie';
+        var url = 'http://localhost:8910/';
+        xhr.open('POST', url, true);
         xhr.onreadystatechange = function(response) {
             if (xhr.readyState != 4 || xhr.status != 200) {
                 return;

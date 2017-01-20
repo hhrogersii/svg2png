@@ -3,13 +3,13 @@
 ## Overview
 A *service* that will generate a Base64 encoded PNG image file from a D3 chart using [PhantomJS](|http://phantomjs.org/) given Report data from SugarCRM.
 
-[Command Line](#basic-usage-from-command-line) | 
-[Web Server Module](#phantomjs-web-server-module) | 
-[Debugging](#debugging) | 
-[Docker](#docker) | 
-[Testing](#testing) | 
-[Response](#response) | 
-[Request](#request) 
+[Command Line](#basic-usage-from-command-line) |
+[Web Server Module](#phantomjs-web-server-module) |
+[Debugging](#debugging) |
+[Docker](#docker) |
+[Testing](#testing) |
+[Response](#response) |
+[Request](#request)
 
 ## Installation
 The PhantomJS binary can be installed globally with [Homebrew](http://brew.sh/) or locally with [Composer](https://github.com/jakoch/phantomjs-installer). Or see [Docker](#docker) section below.
@@ -27,7 +27,7 @@ During development it is helpful to verify the successful PhantomJS capture of t
 
 ```sh
 // [./bin/]phantomjs [script] [source_url] [selector] [target_file]
-$ phantomjs ./test/domshot.js http://localhost/svg2png/test/chart.php .nv-chart pie.png
+$ phantomjs ./test/domshot.js http://localhost/report2chart/test/chart.php .nv-chart pie.png
 ```
 
 <a href="pie.png" target="_blank"><img src="pie.png" width="300" height="300"></a>
@@ -51,8 +51,8 @@ Open a browser to `http://localhost:9000/` and click on the `service.js` item. T
 ## Docker
 The service can be dockerized by running:
 ```sh
-docker build -t svg2png-dock .
-docker run -p 8910:8910 svg2png-dock
+docker build -t report2chart-dock .
+docker run -p 8910:8910 report2chart-dock
 ```
 The docker image is built with https://hub.docker.com/r/wernight/phantomjs/ which has over 1 million pulls.
 
@@ -60,14 +60,14 @@ The docker image is built with https://hub.docker.com/r/wernight/phantomjs/ whic
 Test the *service* by:
 
 1. start the service on the remote host: `phantomjs ./service.js`
-2. open a browser at: `http://localhost/svg2png/test/service.php`
+2. open a browser at: `http://localhost/report2chart/test/service.php`
 3. the test chart config and report data parameters are defined and a AJAX POST is made to: `http://remotehost:8910/`
 4. PhantomJS executes the listen on port 8910 callback script defined in: `./service.js`
   * the post parameters are processed and referenced in an onloadcomplete callback of the render page: `./chart.html`
     - the render page loads libraries and resources and completes
     - the onloadcomplete callback then executes D3 code to render the chart in the context of the test page
   * the rendered chart is rasterized by PhantomJS as a PNG image and Base64 encoded
-5. the service returns the Base64 encoded string in a response back to: `http://localhost/svg2png/test/service.php`
+5. the service returns the Base64 encoded string in a response back to: `http://localhost/report2chart/test/service.php`
 6. a new image is appended to the body using the response string as its DataURI source.
 
 The encoded image could be saved by the client application using internal methods.
