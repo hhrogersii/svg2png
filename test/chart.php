@@ -22,6 +22,9 @@ if (isset($headers['CHART_CONFIG'])) {
 
   $chartConfig = json_decode(json_encode(array(
     'type' => 'pie',
+    'width' => 720,
+    'height' => 480,
+    'zoom' => 1,
     'direction' => 'ltr',
     'showTitle' => true,
     'showLegend' => true,
@@ -52,7 +55,7 @@ if (isset($headers['CHART_CONFIG'])) {
     body {
       background-color: #eef5ff;
     }
-    #chart_export {
+    #chart_container {
       width: 720px;
       height: 480px;
     }
@@ -60,7 +63,7 @@ if (isset($headers['CHART_CONFIG'])) {
 </head>
 <body>
 
-<div id="chart_export" class="nv-chart nv-chart-<?php echo $chartConfig->type; ?>">
+<div id="chart_container" class="nv-chart">
   <svg></svg>
 </div>
 
@@ -68,30 +71,36 @@ if (isset($headers['CHART_CONFIG'])) {
 <script src="../resources/nv.d3.min.js"></script>
 
 <script type="text/javascript">
+var config = <?php echo json_encode($chartConfig); ?>;
+var datum = <?php echo $reportDatum; ?>;
+
 window.onload = function() {
-  // Define define config and data variables
-  var chartConfig = <?php echo json_encode($chartConfig); ?>;
-  var reportDatum = <?php echo $reportDatum; ?>;
+    // Define chart model & class name
+    var model = nv.models[config.type + 'Chart']();
+    var classname = 'nv-chart-' + config.type;
 
-  // Define chart model
-  var chartModel = nv.models[chartConfig.type + 'Chart']();
-
-  // Apply configuration settings
-  // Get method names from config keys
-  var methods = Object.getOwnPropertyNames(chartConfig);
-  // This will be replaced with a chartModel.config(chartConfig) in future release
-  for (var i = 0, l = methods.length; i < l; i += 1) {
-    var method = methods[i];
-    if (chartModel[method]) {
-      chartModel[method](chartConfig[method]);
+    // Apply configuration settings
+    // Get method names from config keys
+    var methods = Object.getOwnPropertyNames(config);
+    // This will be replaced with a model.config(config) in future release
+    for (var i = 0, l = methods.length; i < l; i += 1) {
+      var method = methods[i];
+      if (model[method]) {
+        model[method](config[method]);
+      }
     }
-  }
 
-  // Bind data to svg and call model
-  d3.select('#chart_export svg')
-    .datum(reportDatum)
-    .call(chartModel);
-};
+    // Add chart type class to container
+    d3.select('#chart_container')
+        .style('width', config.width + 'px')
+        .style('height', config.height + 'px')
+        .classed(classname, true);
+
+    // Bind data to svg and call model
+    d3.select('#chart_container svg')
+      .datum(datum)
+      .call(model);
+  };
 </script>
 </body>
 </html>

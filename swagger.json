@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "title": "Report to PNG",
+        "title": "Report to Chart",
         "description": "Render a dynamically formatted SVG chart written in D3 using a headless browser, then capture as an PNG image and return encoded in Base64.",
         "version": "0.0.1"
     },
@@ -291,7 +291,8 @@
                         },
                         "hole": {
                             "description": "The text to render inside the donut hole.",
-                            "type": "string"
+                            "type": "string",
+                            "example": 10
                         },
                         "maxRadius": {
                             "description": "The maximum radius of the pie.",

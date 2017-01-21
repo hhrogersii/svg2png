@@ -1,4 +1,4 @@
-# Sugar Report to PNG Service
+# Sugar Report to Chart Image Service
 
 ## Overview
 A *service* that will generate a Base64 encoded PNG image file from a D3 chart using [PhantomJS](|http://phantomjs.org/) given Report data from SugarCRM.

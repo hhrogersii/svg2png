@@ -21,7 +21,11 @@ var chartRender = function(config, datum) {
         }
 
         // Add chart type class to container
-        d3.select('#chart_container').classed(classname, true);
+        d3.select('#chart_container')
+            .style('width', config.width + 'px')
+            .style('height', config.height + 'px')
+            .classed(classname, true);
+
         // Bind data to svg and call model
         d3.select('#chart_container svg')
             .datum(datum)
