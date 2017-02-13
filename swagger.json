@@ -5,7 +5,7 @@
         "description": "Render a dynamically formatted SVG chart written in D3 using a headless browser, then capture as an PNG image and return encoded in Base64.",
         "version": "0.0.1"
     },
-    "host": "report2chart.arch.sugarcrm.io",
+    "host": "svg2png.arch.sugarcrm.io",
     "schemes": [
         "https"
     ],
@@ -216,15 +216,18 @@
                 },
                 "width": {
                     "description": "The width of the chart container.",
-                    "type": "integer"
+                    "type": "integer",
+                    "default": 960
                 },
                 "height": {
                     "description": "The height of the chart container.",
-                    "type": "integer"
+                    "type": "integer",
+                    "default": 480
                 },
                 "zoom": {
                     "description": "The zoom factor of the page viewport.",
-                    "type": "integer"
+                    "type": "integer",
+                    "default": 1
                 },
                 "colorData": {
                     "description": "The color definition procedure.",
@@ -296,11 +299,13 @@
                         },
                         "maxRadius": {
                             "description": "The maximum radius of the pie.",
-                            "type": "integer"
+                            "type": "integer",
+                            "default": -1
                         },
                         "minRadius": {
                             "description": "The minimum radius of the pie.",
-                            "type": "integer"
+                            "type": "integer",
+                            "default": -1
                         },
                         "rotateDegrees": {
                             "description": "The rotation of the pie in degrees.",
