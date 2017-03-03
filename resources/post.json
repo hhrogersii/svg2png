@@ -1,0 +1,36 @@
+{
+  "REPORT_DATUM": {
+    "properties": {
+      "title": "All Opportunities by Lead Source"
+    },
+    "data": [
+      {"key": "Undefined", "value": 100},
+      {"key": "Cold Call", "value": 0},
+      {"key": "Existing Customer", "value": 75},
+      {"key": "Self Generated", "value": 140},
+      {"key": "Walk In", "value": 10},
+      {"key": "Employee", "value": 160},
+      {"key": "Partner", "value": 100},
+      {"key": "Public Relations", "value": 145},
+      {"key": "Other", "value": 9}
+    ]
+  },
+  "CHART_CONFIG": {
+    "type": "pie",
+    "width": 720,
+    "height": 480,
+    "zoom": 1,
+    "direction": "ltr",
+    "showTitle": true,
+    "showLegend": true,
+    "showLabels": true,
+    "donut": true,
+    "donutRatio": 0.5,
+    "hole": 10,
+    "maxRadius": 250,
+    "minRadius": 100,
+    "rotateDegrees": 0,
+    "arcDegrees": 360,
+    "colorData": "default"
+  }
+}
