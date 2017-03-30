@@ -50,7 +50,7 @@ $chartConfig = array(
         CHART_CONFIG: <?php echo json_encode($chartConfig); ?>
     };
     // var url = 'https://svg2png.arch.sugarcrm.io/v1/pie';
-    var url = 'http://localhost:8910/';
+    var url = 'http://127.0.0.1:8910/v1/pie';
     var xhr = new XMLHttpRequest();
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Accept', 'text/plain');

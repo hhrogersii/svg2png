@@ -33,6 +33,24 @@ var chartRender = function(config, datum) {
     };
 
 var service = server.listen(port, function(request, response) {
+    console.log('request: ', JSON.stringify(request, null, "  "));
+
+    // Set up response
+    response.setHeader('Content-Type', 'text/plain');
+    // Since service is running on a domain different than request
+    response.setHeader('Access-Control-Allow-Origin', '*');
+    response.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    response.setHeader('Access-Control-Allow-Headers', '*');
+
+//--api-enable-cors=true
+//curl -v -X OPTIONS 127.0.0.1:8910
+
+    if (request.method === 'OPTIONS') {
+        response.statusCode = 200;
+        // Close to complete request
+        response.close();
+        return;
+    }
     var post = JSON.parse(request.post);
     var chartConfig = post.CHART_CONFIG;
     var reportDatum = post.REPORT_DATUM;
@@ -49,11 +67,6 @@ var service = server.listen(port, function(request, response) {
             page.close();
             phantom.exit();
         };
-
-    // Set up response
-    response.setHeader('Content-Type', 'text/plain');
-    // Since service is running on a domain different than request
-    response.setHeader('Access-Control-Allow-Origin', '*');
 
     // Define boundaries of capture region
     page.clipRect = {

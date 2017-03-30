@@ -2,5 +2,5 @@
 FROM wernight/phantomjs
 COPY service.js /
 COPY resources /resources/
-CMD ["phantomjs", "service.js"]
+CMD ["phantomjs", "--web-security=false", "--local-to-remote-url-access=yes", "--ignore-ssl-errors=true", "service.js"]
 EXPOSE 8910
