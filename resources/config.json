@@ -1,0 +1,18 @@
+{
+  "type": "pie",
+  "width": 720,
+  "height": 480,
+  "zoom": 1,
+  "direction": "ltr",
+  "showTitle": true,
+  "showLegend": true,
+  "showLabels": true,
+  "donut": true,
+  "donutRatio": 0.5,
+  "hole": 10,
+  "maxRadius": 250,
+  "minRadius": 100,
+  "rotateDegrees": 0,
+  "arcDegrees": 360,
+  "colorData": "default"
+}
