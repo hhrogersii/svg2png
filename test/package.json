@@ -1,0 +1,23 @@
+{
+  "name": "report2chart-concurrency",
+  "version": "0.0.1",
+  "description": "Concurrency testing for Report2Chart micro-service",
+  "keywords": [
+    "charts",
+    "d3",
+    "visualization",
+    "svg",
+    "testing"
+  ],
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Henry Rogers",
+    "url": "https://github.com/hhrogersii"
+  },
+  "scripts": {
+    "test": "node concurrency.js"
+  },
+  "devDependencies": {
+    "loadtest": "*"
+  }
+}
