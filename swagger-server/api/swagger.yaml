@@ -1,0 +1,672 @@
+---
+swagger: "2.0"
+info:
+  description: "Render a dynamically formatted SVG chart written in D3 using a headless\
+    \ browser, then capture as an PNG image and return encoded in Base64."
+  version: "0.0.1"
+  title: "Report to Chart"
+host: "localhost:8080"
+basePath: "/v1"
+schemes:
+- "http"
+consumes:
+- "application/json"
+produces:
+- "text/plain"
+paths:
+  /pie:
+    post:
+      tags:
+      - "Pie Chart"
+      summary: "Capture pie chart image."
+      description: "This entry point is specically for the pie chart type."
+      operationId: "piePOST"
+      parameters:
+      - in: "body"
+        name: "report"
+        required: true
+        schema:
+          $ref: "#/definitions/PieChartRequest"
+      responses:
+        200:
+          description: "Base64 encoded image."
+          schema:
+            $ref: "#/definitions/ImageResponse"
+        default:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "PieChart"
+    options:
+      summary: "Respond to options preflight"
+      description: "This is needed so that CORS will work"
+      operationId: "pieOPTIONS"
+      parameters: []
+      responses:
+        200:
+          description: "OK"
+      x-swagger-router-controller: "Default"
+  /multibar:
+    post:
+      tags:
+      - "Multibar Chart"
+      summary: "Capture multibar chart image."
+      description: "This entry point is specically for the multibar chart type."
+      operationId: "multibarPOST"
+      parameters:
+      - in: "body"
+        name: "report"
+        required: true
+        schema:
+          $ref: "#/definitions/MultibarChartRequest"
+      responses:
+        200:
+          description: "Base64 encoded image."
+          schema:
+            $ref: "#/definitions/ImageResponse"
+        default:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "MultibarChart"
+    options:
+      summary: "Respond to options preflight"
+      description: "This is needed so that CORS will work"
+      operationId: "multibarOPTIONS"
+      parameters: []
+      responses:
+        200:
+          description: "OK"
+      x-swagger-router-controller: "Default"
+  /line:
+    post:
+      tags:
+      - "Line Chart"
+      summary: "Capture line chart image."
+      description: "This entry point is specically for the line chart type."
+      operationId: "linePOST"
+      parameters:
+      - in: "body"
+        name: "report"
+        required: true
+        schema:
+          $ref: "#/definitions/LineChartRequest"
+      responses:
+        200:
+          description: "Base64 encoded image."
+          schema:
+            $ref: "#/definitions/ImageResponse"
+        default:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "LineChart"
+    options:
+      summary: "Respond to options preflight"
+      description: "This is needed so that CORS will work"
+      operationId: "lineOPTIONS"
+      parameters: []
+      responses:
+        200:
+          description: "OK"
+      x-swagger-router-controller: "Default"
+  /funnel:
+    post:
+      tags:
+      - "Funnel Chart"
+      summary: "Capture funnel chart image."
+      description: "This entry point is specically for the funnel chart type."
+      operationId: "funnelPOST"
+      parameters:
+      - in: "body"
+        name: "report"
+        required: true
+        schema:
+          $ref: "#/definitions/FunnelChartRequest"
+      responses:
+        200:
+          description: "Base64 encoded image."
+          schema:
+            $ref: "#/definitions/ImageResponse"
+        default:
+          description: "Unexpected error."
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "FunnelChart"
+    options:
+      summary: "Respond to options preflight"
+      description: "This is needed so that CORS will work"
+      operationId: "funnelOPTIONS"
+      parameters: []
+      responses:
+        200:
+          description: "OK"
+      x-swagger-router-controller: "Default"
+definitions:
+  DataProperties:
+    type: "object"
+    properties:
+      title:
+        type: "string"
+        example: "This is the chart title"
+        description: "Explanitory statement about content of chart."
+      summary:
+        type: "string"
+        example: "This is the summary of the informational story."
+        description: "A short summary of the informational story."
+      source:
+        type: "string"
+        description: "The original source of the data (DOI)."
+      lastUpdated:
+        type: "string"
+        format: "date-time"
+        description: "When the source data was last updated."
+      xDataType:
+        type: "string"
+        description: "The data type of the dimension or x-axis."
+        default: "ordinal"
+      yDataType:
+        type: "string"
+        description: "The data type of the measure or y-axis."
+        default: "numeric"
+    description: "Metadata about the data being visualized."
+  Dimension:
+    type: "number"
+    format: "float"
+    description: "Value represents the series index (Z of 0..x), group index (Z of\
+      \ 1..x), histogram index (Z of -x..x), or dimensional range value (date-time\
+      \ or numeric ranges)."
+    example: 1
+    default: 1
+  Measure:
+    type: "number"
+    format: "float"
+    description: "Value represents the domain value or measure (typically Q of -y..y)."
+    example: 123.4500000000000028421709430404007434844970703125
+    default: 1
+  ObjectValues:
+    type: "array"
+    description: "Data series values represented as arrays of objects."
+    items:
+      $ref: "#/definitions/ObjectValues_inner"
+  ArrayValues:
+    type: "array"
+    description: "Data series values represented as array of arrays."
+    items:
+      $ref: "#/definitions/ArrayValues_inner"
+  ValueValues:
+    type: "array"
+    description: "Data series value represented as a single value."
+    items:
+      $ref: "#/definitions/ValueValues_inner"
+  AbstractChartConfig:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        example: "9809f152ef5ce1cf9503dc22d879a99a789d6fce"
+        description: "Unique identifier for the chart."
+      width:
+        type: "integer"
+        example: 960
+        description: "The width of the chart container."
+      height:
+        type: "integer"
+        example: 480
+        description: "The height of the chart container."
+      zoom:
+        type: "integer"
+        example: 1
+        description: "The zoom factor of the page viewport."
+      colorData:
+        type: "string"
+        description: "The color definition procedure."
+        default: "default"
+        enum:
+        - "default"
+        - "data"
+        - "classes"
+      margin:
+        $ref: "#/definitions/AbstractChartConfig_margin"
+      showTitle:
+        type: "boolean"
+        description: "To show the chart title or not."
+        default: true
+      showLegend:
+        type: "boolean"
+        description: "To show the chart legend or not."
+        default: true
+      showControls:
+        type: "boolean"
+        description: "To show the chart controls or not."
+        default: false
+      strings:
+        $ref: "#/definitions/AbstractChartConfig_strings"
+      direction:
+        type: "string"
+        description: "To render chart strings in LTR or RTL."
+        default: "LTR"
+        enum:
+        - "LTR"
+        - "RTL"
+    description: "Chart configuration method names and values for all chart types."
+  PieChartConfig:
+    type: "object"
+    required:
+    - "type"
+    properties:
+      type:
+        type: "string"
+        description: "The chart model type."
+        default: "pie"
+      donut:
+        type: "boolean"
+        description: "To show the pie chart with a hole in the middle."
+        default: false
+      donutRatio:
+        type: "number"
+        format: "float"
+        description: "The ratio of the hole diameter to the pie diameter."
+        minimum: 0
+        maximum: 1
+        exclusiveMinimum: true
+        exclusiveMaximum: true
+        default: 0.5
+      hole:
+        type: "string"
+        example: "10"
+        description: "The text to render inside the donut hole."
+        default: ""
+      showLabels:
+        type: "boolean"
+        description: "To show the chart labels or not."
+        default: true
+      showLeaders:
+        type: "boolean"
+        description: "To show the chart label leaders or not."
+        default: true
+      minRadius:
+        type: "integer"
+        example: 100
+        description: "The minimum radius of the pie."
+      maxRadius:
+        type: "integer"
+        example: 400
+        description: "The maximum radius of the pie."
+      rotateDegrees:
+        type: "number"
+        format: "integer"
+        example: 0
+        description: "The rotation of the pie in degrees."
+        minimum: 0
+        maximum: 360
+        exclusiveMinimum: false
+        exclusiveMaximum: true
+      arcDegrees:
+        type: "number"
+        format: "integer"
+        example: 360
+        description: "The angle of the pie arc in degrees."
+        minimum: 0
+        maximum: 360
+        exclusiveMinimum: true
+        exclusiveMaximum: false
+      pieLabelsOutside:
+        type: "boolean"
+        description: "To show the pie chart labels outside the pie with leaders or\
+          \ inside."
+        default: true
+  MultibarChartConfig:
+    type: "object"
+    required:
+    - "type"
+    properties:
+      type:
+        type: "string"
+        description: "The chart model type."
+        default: "multibar"
+      vertical:
+        type: "boolean"
+        description: "To set a horizontal or vertical bar type."
+        default: true
+      allowScroll:
+        type: "boolean"
+        description: "Whether to allow the bar chart to scroll."
+        default: true
+      hideEmptyGroups:
+        type: "boolean"
+        description: "If a bar chart group has no values or all values are zero then\
+          \ hide group."
+        default: true
+      xDomain:
+        type: "array"
+        description: "The limits of the chart x domain."
+        items:
+          type: "number"
+        maxItems: 2
+        minItems: 2
+      yDomain:
+        type: "array"
+        description: "The limits of the chart y domain."
+        items:
+          type: "number"
+        maxItems: 2
+        minItems: 2
+      forceX:
+        type: "array"
+        description: "Values that must exist in x range."
+        items:
+          type: "number"
+      forceY:
+        type: "array"
+        description: "Values that must exist in y range."
+        items:
+          type: "number"
+      rotateTicks:
+        type: "boolean"
+        description: "Whether to allow ticks to rotate on x axis."
+        default: true
+      reduceXTicks:
+        type: "boolean"
+        description: "Whether to reduce the number of x axis ticks."
+        default: true
+      staggerTicks:
+        type: "boolean"
+        description: "Whether to allow ticks to stagger on x axis."
+        default: true
+      wrapTicks:
+        type: "boolean"
+        description: "Whether to allow ticks to wrap on x axis."
+        default: true
+      clipEdge:
+        type: "boolean"
+        description: "Whether to clip the chart model to the inner margins."
+        default: true
+      nice:
+        type: "boolean"
+        description: "Whether to round the x axis values to closest integer."
+        default: true
+      stacked:
+        type: "boolean"
+        description: "Whether to stack or cluster the data groups."
+        default: true
+      showValues:
+        type: "string"
+        description: "Where to place the on bar chart values."
+        default: "middle"
+        enum:
+        - "top"
+        - "middle"
+        - "bottom"
+        - "total"
+        - "end"
+  LineChartConfig:
+    type: "object"
+    required:
+    - "type"
+    properties:
+      type:
+        type: "string"
+        description: "The chart model type."
+        default: "line"
+      xDomain:
+        type: "array"
+        description: "The limits of the chart x domain."
+        items:
+          type: "number"
+        maxItems: 2
+        minItems: 2
+      yDomain:
+        type: "array"
+        description: "The limits of the chart y domain."
+        items:
+          type: "number"
+        maxItems: 2
+        minItems: 2
+      forceX:
+        type: "array"
+        description: "Values that must exist in x range."
+        items:
+          type: "number"
+      forceY:
+        type: "array"
+        description: "Values that must exist in y range."
+        items:
+          type: "number"
+      rotateTicks:
+        type: "boolean"
+        description: "Whether to allow ticks to rotate on x axis."
+        default: true
+      reduceXTicks:
+        type: "boolean"
+        description: "Whether to reduce the number of x axis ticks."
+        default: true
+      staggerTicks:
+        type: "boolean"
+        description: "Whether to allow ticks to stagger on x axis."
+        default: true
+      wrapTicks:
+        type: "boolean"
+        description: "Whether to allow ticks to wrap on x axis."
+        default: true
+      clipEdge:
+        type: "boolean"
+        description: "Whether to clip the chart model to the inner margins."
+        default: true
+      nice:
+        type: "boolean"
+        description: "Whether to round the x axis values to closest integer."
+        default: true
+  FunnelChartConfig:
+    type: "object"
+    required:
+    - "type"
+    properties:
+      type:
+        type: "string"
+        description: "The chart model type."
+        default: "funnel"
+      xDomain:
+        type: "array"
+        description: "The limits of the chart x domain."
+        items:
+          type: "number"
+        maxItems: 2
+        minItems: 2
+      yDomain:
+        type: "array"
+        description: "The limits of the chart y domain."
+        items:
+          type: "number"
+        maxItems: 2
+        minItems: 2
+      forceX:
+        type: "array"
+        description: "Values that must exist in x range."
+        items:
+          type: "number"
+      forceY:
+        type: "array"
+        description: "Values that must exist in y range."
+        items:
+          type: "number"
+      clipEdge:
+        type: "boolean"
+        description: "Whether to clip the chart model to the inner margins."
+        default: true
+      wrapLabels:
+        type: "boolean"
+        description: "Whether to allow funnel labels to wrap."
+        default: true
+  PieConfig:
+    allOf:
+    - $ref: "#/definitions/AbstractChartConfig"
+    - $ref: "#/definitions/PieChartConfig"
+  PieData:
+    type: "object"
+    properties:
+      properties:
+        $ref: "#/definitions/DataProperties"
+      data:
+        $ref: "#/definitions/ValueValues"
+    description: "Don't let this double 'properties' throw you off. DataProperties\
+      \ has an object property called 'properties' which has the properties of..."
+  PieChartRequest:
+    type: "object"
+    properties:
+      chartConfig:
+        $ref: "#/definitions/PieConfig"
+      reportData:
+        $ref: "#/definitions/PieData"
+    description: "POST parameters for pie chart type."
+  MultibarConfig:
+    allOf:
+    - $ref: "#/definitions/AbstractChartConfig"
+    - $ref: "#/definitions/MultibarChartConfig"
+  MultibarData:
+    type: "object"
+    properties:
+      properties:
+        $ref: "#/definitions/DataProperties"
+      data:
+        $ref: "#/definitions/ObjectValues"
+    description: "The data meta attributes and report data array"
+  MultibarChartRequest:
+    type: "object"
+    properties:
+      chartConfig:
+        $ref: "#/definitions/MultibarConfig"
+      reportData:
+        $ref: "#/definitions/MultibarData"
+    description: "POST parameters."
+  LineConfig:
+    allOf:
+    - $ref: "#/definitions/AbstractChartConfig"
+    - $ref: "#/definitions/LineChartConfig"
+  LineData:
+    type: "object"
+    properties:
+      properties:
+        $ref: "#/definitions/DataProperties"
+      data:
+        $ref: "#/definitions/ArrayValues"
+    description: "The data meta attributes and report data array"
+  LineChartRequest:
+    type: "object"
+    properties:
+      chartConfig:
+        $ref: "#/definitions/LineConfig"
+      reportData:
+        $ref: "#/definitions/LineData"
+    description: "POST parameters."
+  FunnelConfig:
+    allOf:
+    - $ref: "#/definitions/AbstractChartConfig"
+    - $ref: "#/definitions/FunnelChartConfig"
+  FunnelData:
+    type: "object"
+    properties:
+      properties:
+        $ref: "#/definitions/DataProperties"
+      data:
+        $ref: "#/definitions/ValueValues"
+    description: "The data meta attributes and report data array"
+  FunnelChartRequest:
+    type: "object"
+    properties:
+      chartConfig:
+        $ref: "#/definitions/FunnelConfig"
+      reportData:
+        $ref: "#/definitions/FunnelData"
+    description: "POST parameters."
+  ImageResponse:
+    type: "string"
+    format: "byte"
+    description: "Base64 encoded image."
+    example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAilBMVEXo6epZWlzo6ero6epZWlxZWlzo6ero6ero6epZWlxZWlzo6epZWlzmHiVZWlzo6ero6ero6ermHiXmHiVZWlzmHiXmHiXo6ermHiXo6ermHiVZWlxZWlxZWlxZWlzmHiXo6ermHiXmHiXmHiXmHiXmHiXmHiVZWlxZWlzo6eoAAADmHiVZWlzo6eqPQJV9AAAAK3RSTlOAgI9w249Qx7MwcKCzUFAw2xCPx+4ws+7bIHAgYBCggGBAoO4QIGDHQEAAki8vsQAAAs1JREFUeNrt2+lu4kAQBGBzmiuYw0AAnxibw8P7v94qu0ChNCCld4786HqBfFUiMKCxd3ac/wKUeZWmee4IUKZFfc3ywz6gWtaPKdLSJqCc1QhmsAWo5vXzFLOSBeCXp5lXPAC/PM2sNAVY7GqEOQMfsK8+a0TjDJ7e8shntecDaHlWdgsNAFKeMwMfsN+Q8owZ2ICclDcwg/e6fFFryy5/DTBaHik2+xcARnmtM1DAx7JGzM/g0VMGYmMGz055enahgD3Km84yfwIoa5upKCC1Cpg7X8D1a8Dpf8GmdPs+8CvfCbv+xc+mNj8LjkmokvgG6F7+Zniy9Gm4HYTqK4cbwL9cs2pNzZ8HxiN1S/8KuCCYwcyJaNsIFXIkAAMz7Bak/DsAnWGx01z+PQAzrPV+L4hQ/j0A6XXJDOzyHUVDAXQGb63ju2F0UIoBwAzcb8cozwNgBs7vAyjPB2CGjPULSR/luQCkSWd4Xz6O2grhAxA/+8GvZP0Ef4UBYMxQpKS8bgCdIS0Y5dkAzBC8+a04HqC8bgAyuZ5dSI4obwaADDEDyodKWQBgBlreDgCEhxU6StkDIPf/ykS5AUxuBx1lF4Bk/15+ygkAE0TWAQheAY4Apy/AQQACEIAABCAAAQhAAAIQgAAEIAABCEAAAhCAAAQgADZg/FsW6LkCbK+AzBGgfb9JtXIDGN8BJyeA5OEyW+YAMIofAOdgYhvQ+H6d7zS0CGhH8ZP7hNNsYgfQ2b680BgMjQMO0RkBgDEDALzyFIAZzABQngI4MwDAKE8AJEFTK2A0ZjxjkvmaAGFjy3zKZt3kAWh5BgAzMAEozwRgBg4A5fkApNtjAMJBrPFpu7W3+hkgOWp+3A8zUACjPAeAGSiAltcOwAwUQMobACDT1urbVabRQ/m+jcd+cXZZ4RoPThnmAZghwE0ulDcLQIIWrhX2B0eUZwCc5g+jQcBNTYxVtgAAAABJRU5ErkJggg=="
+  Error:
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      message:
+        type: "string"
+      fields:
+        type: "string"
+  ObjectValues_inner_values:
+    properties:
+      x:
+        $ref: "#/definitions/Dimension"
+      y:
+        $ref: "#/definitions/Measure"
+  ObjectValues_inner:
+    properties:
+      key:
+        type: "string"
+        example: "Series 1"
+      values:
+        type: "array"
+        items:
+          $ref: "#/definitions/ObjectValues_inner_values"
+  ArrayValues_inner:
+    properties:
+      key:
+        type: "string"
+        example: "Series 1"
+      values:
+        type: "array"
+        items:
+          type: "array"
+          items:
+            type: "number"
+            format: "float"
+          maxItems: 2
+          minItems: 2
+  ValueValues_inner:
+    properties:
+      key:
+        type: "string"
+        default: "Series 1"
+      value:
+        $ref: "#/definitions/Measure"
+  AbstractChartConfig_margin:
+    properties:
+      top:
+        type: "integer"
+        example: 10
+      right:
+        type: "integer"
+        example: 10
+      bottom:
+        type: "integer"
+        example: 10
+      left:
+        type: "integer"
+        example: 10
+    description: "Sets the space around the outside of the chart."
+  AbstractChartConfig_strings_legend:
+    properties:
+      close:
+        type: "string"
+        default: "Hide legend"
+      open:
+        type: "string"
+        default: "Show legend"
+  AbstractChartConfig_strings_controls:
+    properties:
+      close:
+        type: "string"
+        default: "Hide controls"
+      open:
+        type: "string"
+        default: "Show controls"
+  AbstractChartConfig_strings:
+    properties:
+      legend:
+        $ref: "#/definitions/AbstractChartConfig_strings_legend"
+      controls:
+        $ref: "#/definitions/AbstractChartConfig_strings_controls"
+      noData:
+        type: "string"
+        default: "No Data Available."
+    description: "Map of the strings to use for common labels."
