@@ -8,12 +8,12 @@ var loadtest = require('loadtest');
 
 var body = require('../resources/post.json');
 var options = {
-        url: 'https://svg2png.arch.sugarcrm.io/v1/pie',
-        maxRequests: 100,
+        url: '%%URL%%',
+        maxRequests: 500,
         maxSeconds: 60000,
         // requestsPerSecond: 10,
         method: 'POST',
-        concurrency: 10,
+        concurrency: 100,
         body: body,
         agentKeepAlive: true,
         headers: {
