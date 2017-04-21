@@ -295,7 +295,10 @@ check_dir()
     # Excepting "home" (linux) or "Users" (darwin) as top level directory
     currentDir=$(echo $DIR | awk 'BEGIN { FS="/" } { print $2 }')
 
-    if [ "$OSTYPE" == "darwin" ]; then
+    # echo ${OSTYPE} returns darwin15
+    # echo $(uname -s) returns Darwin
+
+    if [ "$(uname -s)" == "Darwin" ]; then
         expectedHome="Users"
     else
         expectedHome="home"
