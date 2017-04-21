@@ -102,6 +102,12 @@ podTemplate(
                     stage('Concurrency Tests') {
 
                         // Using 1 replica
+                        container(name:'kubectl') {
+                            sh """
+                            kubectl --namespace ${stagingNs} scale deployment report2chart --replicas=1
+                            kubectl --namespace ${stagingNs} rollout status deployment report2chart
+                            """
+                        }
                         container(name:'npm') {
                             sh """
                             cd test/
@@ -111,22 +117,21 @@ podTemplate(
                             """
                         }
 
-                        // Using 5 replicas
+                        // Using 4 replicas
                         container(name:'kubectl') {
                             sh """
-                            kubectl --namespace ${stagingNs} scale deployment report2chart --replicas=5
+                            kubectl --namespace ${stagingNs} scale deployment report2chart --replicas=4
+                            kubectl --namespace ${stagingNs} rollout status deployment report2chart
                             """
                         }
-
-                        // TODO: test until all replicas are live
-                        sleep(10)
-
                         container(name:'npm') {
                             sh """
                             cd test/
                             npm test
                             """
                         }
+
+                        // We leave the 4 replicas - this needs to reflect production
                     }
 
                 }
