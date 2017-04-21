@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-.PHONY: minikube-init minikube-cleanup minikube-update minikube-status concurrency
+.PHONY: minikube-init minikube-cleanup minikube-update minikube-status
 
 minikube-init: minikube-cleanup
 	k8s/minikube/deploy.sh init
@@ -14,5 +14,3 @@ minikube-update:
 minikube-status:
 	k8s/minikube/deploy.sh status
 
-concurrency:
-	# to be added, need url as argument
