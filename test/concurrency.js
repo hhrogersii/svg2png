@@ -5,8 +5,8 @@
 // Run with npm: npm test
 // https://github.com/alexfernandez/loadtest
 var loadtest = require('loadtest');
-
 var body = require('../resources/post.json');
+
 var options = {
         url: 'https://svg2png.arch.sugarcrm.io/v1/pie',
         maxRequests: 100,
@@ -21,10 +21,9 @@ var options = {
         },
         contentType: 'text/plain;charset=UTF-8'
     };
-loadtest.loadTest(options, function(error, result)
-{
-    if (error)
-    {
+
+loadtest.loadTest(options, function(error, result) {
+    if (error) {
         return console.error('Got an error: %s', error);
     }
     console.log('Tests run successfully');

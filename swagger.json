@@ -5,12 +5,13 @@
         "description": "Render a dynamically formatted SVG chart written in D3 using a headless browser, then capture as an PNG image and return encoded in Base64.",
         "version": "0.0.1"
     },
-    "host": "localhost:8080",
+    "host": "localhost:8910",
     "schemes": [
         "http"
     ],
     "basePath": "/v1",
     "consumes": [
+        "text/plain",
         "application/json"
     ],
     "produces": [
@@ -474,13 +475,13 @@
                 "minRadius": {
                     "description": "The minimum radius of the pie.",
                     "type": "integer",
-                    "default": -1,
+                    "default": 100,
                     "example": 100
                 },
                 "maxRadius": {
                     "description": "The maximum radius of the pie.",
                     "type": "integer",
-                    "default": -1,
+                    "default": 400,
                     "example": 400
                 },
                 "fixedRadius": {
@@ -780,10 +781,10 @@
             "description": "POST parameters for pie chart type.",
             "type": "object",
             "properties": {
-                "chartConfig": {
+                "CHART_CONFIG": {
                     "$ref": "#/definitions/PieConfig"
                 },
-                "reportData": {
+                "REPORT_DATUM": {
                     "$ref": "#/definitions/PieData"
                 }
             }
@@ -814,10 +815,10 @@
             "description": "POST parameters.",
             "type": "object",
             "properties": {
-                "chartConfig": {
+                "CHART_CONFIG": {
                     "$ref": "#/definitions/MultibarConfig"
                 },
-                "reportData": {
+                "REPORT_DATUM": {
                     "$ref": "#/definitions/MultibarData"
                 }
             }
@@ -848,10 +849,10 @@
             "description": "POST parameters.",
             "type": "object",
             "properties": {
-                "chartConfig": {
+                "CHART_CONFIG": {
                     "$ref": "#/definitions/LineConfig"
                 },
-                "reportData": {
+                "REPORT_DATUM": {
                     "$ref": "#/definitions/LineData"
                 }
             }
@@ -882,10 +883,10 @@
             "description": "POST parameters.",
             "type": "object",
             "properties": {
-                "chartConfig": {
+                "CHART_CONFIG": {
                     "$ref": "#/definitions/FunnelConfig"
                 },
-                "reportData": {
+                "REPORT_DATUM": {
                     "$ref": "#/definitions/FunnelData"
                 }
             }
