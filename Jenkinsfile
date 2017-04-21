@@ -55,6 +55,7 @@ podTemplate(
         // Build the service containers and publish them to the registry. We need to publish
         // them because we are going to schedule a pod later on which can end up on a
         // different node in the k8s cluster.
+        // TODO: can we use built-in docker build/push from Jenkins instead of sep container ?
         stage('Baking Containers') {
             container(name:'docker') {
                 sh """
@@ -67,15 +68,12 @@ podTemplate(
         }
 
         // Deploy the service so we can run tests against it
-        // TODO: add wait until service pod(s) are live
         stage('Deploy Service') {
             container(name:'kubectl') {
                 sh """
                 kubectl version
-                ./k8s/pipeline/generate.sh ${version} ${imagePhantomjs} ${imageNginx}
-                kubectl create namespace ${qaNs}
-                kubectl --namespace ${qaNs} create -f report2chart-deployment.yaml
-                kubectl --namespace ${qaNs} create -f report2chart-service.yaml
+                kubectl get namespace | grep report2chart
+                ./k8s/pipeline/deploy.sh qa ${qaNs} ${version} ${imagePhantomjs} ${imageNginx}
                 """
             }
         }
@@ -85,50 +83,52 @@ podTemplate(
             echo 'API and E2E Tests to be added'
         }
 
-        // Concurrency/load testing of the service (TODO: move to staging)
-        stage('Concurrency Tests') {
-
-            // Using 1 replica
-            container(name:'npm') {
-                sh """
-                cd test/
-                sed -i "s~%%URL%%~http://report2chart.${qaNs}/api/v1/pie~g" concurrency.js
-                npm install
-                npm test
-                """
-            }
-
-            // Using 5 replicas
-            container(name:'kubectl') {
-                sh """
-                kubectl --namespace ${qaNs} scale deployment report2chart --replicas=5
-                """
-            }
-
-            // TODO: test until all replicas are live
-            sleep(10)
-
-            container(name:'npm') {
-                sh """
-                cd test/
-                npm test
-                """
-            }
-        }
-
+        // Branch specific logic
         switch (env.BRANCH_NAME) {
 
-            // Deploy to staging environment
+            // Deploy to staging environment and run concurrency tests
             case ["staging"]:
                 lock(resource: 'report2chart-staging') {
 
-                    // TODO: namespace/objects are expected to exist already
-                    // How do we initialize them ?
                     stage('Deploy Staging') {
+                        container(name:'kubectl') {
+                            sh """
+                            kubectl version
+                            ./k8s/pipeline/deploy.sh staging ${stagingNs} ${version} ${imagePhantomjs} ${imageNginx}
+                            """
+                        }
                     }
 
                     stage('Concurrency Tests') {
+
+                        // Using 1 replica
+                        container(name:'npm') {
+                            sh """
+                            cd test/
+                            sed -i "s~%%URL%%~http://report2chart.${stagingNs}/api/v1/pie~g" concurrency.js
+                            npm install
+                            npm test
+                            """
+                        }
+
+                        // Using 5 replicas
+                        container(name:'kubectl') {
+                            sh """
+                            kubectl --namespace ${stagingNs} scale deployment report2chart --replicas=5
+                            """
+                        }
+
+                        // TODO: test until all replicas are live
+                        sleep(10)
+
+                        container(name:'npm') {
+                            sh """
+                            cd test/
+                            npm test
+                            """
+                        }
                     }
+
                 }
                 break
 

@@ -8,19 +8,19 @@ spec:
     metadata:
       labels:
         pipeline.sugarcrm.io/app: report2chart
-        pipeline.sugarcrm.io/commit: %%VERSION%%
+        pipeline.sugarcrm.io/commit: %%COMMIT%%
     spec:
       restartPolicy: Always
       securityContext: {}
       terminationGracePeriodSeconds: 1
       containers:
-      - name: report2chart 
+      - name: phantomjs 
         image: %%IMAGE_PHANTOMJS%% 
         imagePullPolicy: IfNotPresent
       - name: nginx
         image: %%IMAGE_NGINX%%
         imagePullPolicy: IfNotPresent 
         ports:
-        - name: nginx
+        - name: http 
           containerPort: 80
           protocol: TCP
