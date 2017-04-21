@@ -40,7 +40,7 @@ if (isset($headers['CHART_CONFIG'])) {
     'colorData' => 'default',
   )));
 
-  $reportDatum = file_get_contents('../resources/pie_data.json');
+  $reportDatum = file_get_contents('pie_data.json');
 
 }
 ?>

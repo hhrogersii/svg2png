@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1 
+kind: Deployment
+metadata:
+  name: report2chart
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        pipeline.sugarcrm.io/app: report2chart
+        pipeline.sugarcrm.io/commit: %%VERSION%%
+    spec:
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 1
+      containers:
+      - name: report2chart 
+        image: %%IMAGE_PHANTOMJS%% 
+        imagePullPolicy: IfNotPresent
+      - name: nginx
+        image: %%IMAGE_NGINX%%
+        imagePullPolicy: IfNotPresent 
+        ports:
+        - name: nginx
+          containerPort: 80
+          protocol: TCP

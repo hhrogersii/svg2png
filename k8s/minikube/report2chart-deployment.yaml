@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1 
+kind: Deployment
+metadata:
+  name: report2chart
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: report2chart
+      annotations:
+        pod.beta.kubernetes.io/init-containers: '[
+          {
+            "name": "wait-for-tools",
+            "image": "busybox",
+            "imagePullPolicy": "IfNotPresent",
+            "command": ["sh", "-c", "until nslookup tools; do echo waiting for tools; sleep 1; done;"]
+          }
+        ]'
+    spec:
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 1
+      containers:
+      - name: report2chart 
+        image: %%IMAGE_PHANTOMJS%% 
+        imagePullPolicy: Never 
+      - name: nginx
+        image: %%IMAGE_NGINX%%
+        imagePullPolicy: Never
+        ports:
+        - name: nginx
+          containerPort: 80
+          protocol: TCP
+        volumeMounts:
+        - name: swagger
+          mountPath: /www
+          readOnly: false
+      volumes:
+      - name: swagger
+        hostPath:
+          path: %%ROOT%%/swagger

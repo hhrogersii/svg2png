@@ -1,0 +1,55 @@
+apiVersion: extensions/v1beta1 
+kind: Deployment
+metadata:
+  name: tools 
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: tools
+    spec:
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 1
+      containers:
+      - name: tools
+        image: %%IMAGE_TOOLS%% 
+        imagePullPolicy: Never
+        ports:
+        - name: tools
+          containerPort: 80
+          protocol: TCP
+        volumeMounts:
+        - name: test
+          mountPath: /var/www/localhost/htdocs/test
+          readOnly: false
+        - name: swagger
+          mountPath: /var/www/localhost/htdocs/mount
+          readOnly: false
+        env:
+        - name: REPORT2CHART_SVC
+          valueFrom:
+            configMapKeyRef:
+              name: tools
+              key: report2chart.svc
+      - name: swagger-ui
+        image: swaggerapi/swagger-ui:v3.0.6
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: swagger-ui
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: API_URL
+          valueFrom:
+            configMapKeyRef:
+              name: tools
+              key: report2chart.swagger
+      volumes:
+      - name: test
+        hostPath:
+          path: %%ROOT%%/test
+      - name: swagger
+        hostPath:
+          path: %%ROOT%%/swagger
