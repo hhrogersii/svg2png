@@ -3,3 +3,5 @@ vendor
 bin
 composer.phar
 node_modules
+debug.log
+report2chart-*

@@ -1,0 +1,7 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: tools
+data:
+  report2chart.svc: "%%SVC%%"
+  report2chart.swagger: "%%SWAGGER%%"
