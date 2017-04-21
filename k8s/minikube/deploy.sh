@@ -23,6 +23,7 @@ fi
 
 MINIKUBE=minikube
 KUBECTL=kubectl
+DOCKER=docker
 NS=report2chart
 APP=report2chart
 LOG=debug.log
@@ -154,7 +155,7 @@ build_phantomjs()
 {
     IMAGE_PHANTOMJS="report2chart-phantomjs:${COMMIT}-${TS}"
     echo -e " * Building container image ${IMAGE_PHANTOMJS} ... \c"
-    docker build -t ${IMAGE_PHANTOMJS} $DIR/../../ &> $LOG
+    $DOCKER build -t ${IMAGE_PHANTOMJS} $DIR/../../ &> $LOG
     if [ $? -ne 0 ]; then
         echo "Error building container image ${IMAGE_PHANTOMJS}" >&2; exit 1
     fi
@@ -165,7 +166,7 @@ build_nginx()
 {
     IMAGE_NGINX="report2chart-nginx:${COMMIT}-${TS}"
     echo -e " * Building container image ${IMAGE_NGINX} ... \c"
-    docker build -t ${IMAGE_NGINX} -f $DIR/../../Dockerfile.mc_nginx $DIR/../../ &> $LOG
+    $DOCKER build -t ${IMAGE_NGINX} -f $DIR/../../Dockerfile.mc_nginx $DIR/../../ &> $LOG
     if [ $? -ne 0 ]; then
         echo "Error building container image ${IMAGE_NGINX}" >&2; exit 1
     fi
@@ -176,7 +177,7 @@ build_tools()
 {
     IMAGE_TOOLS="report2chart-tools:${COMMIT}-${TS}"
     echo -e " * Building container image ${IMAGE_TOOLS} ... \c"
-    docker build -t ${IMAGE_TOOLS} -f $DIR/../../Dockerfile.mc_tools $DIR/../../ &> $LOG
+    $DOCKER build -t ${IMAGE_TOOLS} -f $DIR/../../Dockerfile.mc_tools $DIR/../../ &> $LOG
     if [ $? -ne 0 ]; then
         echo "Error building container image ${IMAGE_TOOLS}" >&2; exit 1
     fi
@@ -248,7 +249,8 @@ init()
     check_dir
 
     # Log file
-    LOG=$DIR/$LOG
+    #LOG=$DIR/$LOG
+    LOG=/dev/null
 
     # Check minikube and kubectl commands
     echo -e " * Checking minikube ... \c"
