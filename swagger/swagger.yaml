@@ -1,0 +1,698 @@
+swagger: '2.0'
+
+#======================================#
+#                API Info              #
+#======================================#
+
+info:
+  title: Report to Chart
+  description: 'Render a dynamically formatted SVG chart written in D3 using a headless browser, then capture as an PNG image and return encoded in Base64.'
+  version: 0.0.1
+schemes:
+  - http
+basePath: /api/v1
+consumes:
+  - application/json
+produces:
+  - text/plain
+
+#======================================#
+#                Paths                 #
+#======================================#
+
+paths:
+  /pie:
+    options:
+      summary: Respond to options preflight
+      description: This is needed so that CORS will work
+      responses:
+        200:
+          description: OK
+    post:
+      summary: Capture pie chart image.
+      description: This entry point is specically for the pie chart type.
+      tags:
+        - Pie Chart
+      parameters:
+        - name: report
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PieChartRequest'
+      responses:
+        '200':
+          description: Base64 encoded image.
+          schema:
+            $ref: '#/definitions/ImageResponse'
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/Error'
+
+  /multibar:
+    options:
+      summary: Respond to options preflight
+      description: This is needed so that CORS will work
+      responses:
+        200:
+          description: OK
+    post:
+      summary: Capture multibar chart image.
+      description: This entry point is specically for the multibar chart type.
+      tags:
+        - Multibar Chart
+      parameters:
+        - name: report
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/MultibarChartRequest'
+      responses:
+        '200':
+          description: Base64 encoded image.
+          schema:
+            $ref: '#/definitions/ImageResponse'
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/Error'
+
+  /line:
+    options:
+      summary: Respond to options preflight
+      description: This is needed so that CORS will work
+      responses:
+        200:
+          description: OK
+    post:
+      summary: Capture line chart image.
+      description: This entry point is specically for the line chart type.
+      tags:
+        - Line Chart
+      parameters:
+        - name: report
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LineChartRequest'
+      responses:
+        '200':
+          description: Base64 encoded image.
+          schema:
+            $ref: '#/definitions/ImageResponse'
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/Error'
+
+  /funnel:
+    options:
+      summary: Respond to options preflight
+      description: This is needed so that CORS will work
+      responses:
+        200:
+          description: OK
+    post:
+      summary: Capture funnel chart image.
+      description: This entry point is specically for the funnel chart type.
+      tags:
+        - Funnel Chart
+      parameters:
+        - name: report
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/FunnelChartRequest'
+      responses:
+        '200':
+          description: Base64 encoded image.
+          schema:
+            $ref: '#/definitions/ImageResponse'
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/Error'
+
+#======================================#
+#             Definitions              #
+#======================================#
+
+definitions:
+
+  #--------------------------------------
+  # Report data definitions 
+  
+  DataProperties:
+    description: Metadata about the data being visualized.
+    type: object
+    properties:
+      title:
+        description: Explanitory statement about content of chart.
+        type: string
+        example: This is the chart title
+      summary:
+        description: A short summary of the informational story.
+        type: string
+        example: This is the summary of the informational story.
+      source:
+        description: The original source of the data (DOI).
+        type: string
+      lastUpdated:
+        description: When the source data was last updated.
+        type: string
+        format: date-time
+      xDataType:
+        description: The data type of the dimension or x-axis.
+        type: string
+        default: ordinal
+      yDataType:
+        description: The data type of the measure or y-axis.
+        type: string
+        default: numeric
+
+  Dimension:
+    description: Value represents the series index (Z of 0..x), group index (Z of 1..x), histogram index (Z of -x..x), or dimensional range value (date-time or numeric ranges).
+    type: number
+    format: float
+    default: 1
+    example: 1
+  Measure:
+    description: Value represents the domain value or measure (typically Q of -y..y).
+    type: number
+    format: float
+    default: 1
+    example: 123.45
+
+  ObjectValues:
+    description: Data series values represented as arrays of objects.
+    type: array
+    items:
+      type: object
+      properties:
+        key:
+          type: string
+          example: 'Series 1'
+        values:
+          type: array
+          items:
+            type: object
+            properties:
+              x:
+                $ref: '#/definitions/Dimension'
+              y:
+                $ref: '#/definitions/Measure'
+
+  ArrayValues:
+    description: Data series values represented as array of arrays.
+    type: array
+    items:
+      type: object
+      properties:
+        key:
+          type: string
+          example: 'Series 1'
+        values:
+          type: array
+          items:
+            type: array
+            minItems: 2
+            maxItems: 2
+            items:
+              type: number
+              format: float
+
+  ValueValues:
+    description: Data series value represented as a single value.
+    type: array
+    items:
+      type: object
+      properties:
+        key:
+          type: string
+          default: 'Series 1'
+        value:
+          $ref: '#/definitions/Measure'
+
+
+  #--------------------------------------
+  # Chart configuration definitions 
+  
+  AbstractChartConfig:
+    description: Chart configuration method names and values for all chart types.
+    type: object
+    properties:
+      id:
+        description: Unique identifier for the chart.
+        type: string
+        example: 9809f152ef5ce1cf9503dc22d879a99a789d6fce
+      width:
+        description: The width of the chart container.
+        type: integer
+        default: 960
+        example: 960
+      height:
+        description: The height of the chart container.
+        type: integer
+        default: 480
+        example: 480
+      zoom:
+        description: The zoom factor of the page viewport.
+        type: integer
+        default: 1
+        example: 1
+      colorData:
+        description: The color definition procedure.
+        type: string
+        enum:
+          - default
+          - data
+          - classes
+        default: default
+      margin:
+        description: Sets the space around the outside of the chart.
+        type: object
+        properties:
+          top:
+            type: integer
+            default: 10
+            example: 10
+          right:
+            type: integer
+            default: 10
+            example: 10
+          bottom:
+            type: integer
+            default: 10
+            example: 10
+          left:
+            type: integer
+            default: 10
+            example: 10
+      showTitle:
+        description: To show the chart title or not.
+        type: boolean
+        default: true
+      showLegend:
+        description: To show the chart legend or not.
+        type: boolean
+        default: true
+      showControls:
+        description: To show the chart controls or not.
+        type: boolean
+        default: false
+      strings:
+        description: Map of the strings to use for common labels.
+        type: object
+        properties:
+          legend:
+            type: object
+            properties:
+              close:
+                type: string
+                default: Hide legend
+              open:
+                type: string
+                default: Show legend
+          controls:
+            type: object
+            properties:
+              close:
+                type: string
+                default: Hide controls
+              open:
+                type: string
+                default: Show controls
+          noData:
+            type: string
+            default: No Data Available.
+      direction:
+        description: To render chart strings in LTR or RTL.
+        type: string
+        enum:
+          - LTR
+          - RTL
+        default: LTR
+
+  PieChartConfig:
+    type: object
+    required:
+      - type
+    properties:
+      type:
+        description: The chart model type.
+        type: string
+        default: pie
+      donut:
+        description: To show the pie chart with a hole in the middle.
+        type: boolean
+        default: false
+      donutRatio:
+        description: The ratio of the hole diameter to the pie diameter.
+        type: number
+        format: float
+        default: 0.5
+        minimum: 0
+        maximum: 1
+        exclusiveMinimum: true
+        exclusiveMaximum: true
+      hole:
+        description: The text to render inside the donut hole.
+        type: string
+        default: ''
+        example: '10'
+      showLabels:
+        description: To show the chart labels or not.
+        type: boolean
+        default: true
+      showLeaders:
+        description: To show the chart label leaders or not.
+        type: boolean
+        default: true
+      minRadius:
+        description: The minimum radius of the pie.
+        type: integer
+        default: -1
+        example: 100
+      maxRadius:
+        description: The maximum radius of the pie.
+        type: integer
+        default: -1
+        example: 400
+      fixedRadius:
+        description: A set size of pie radius
+        default: -1
+        example: 200
+      rotateDegrees:
+        description: The rotation of the pie in degrees.
+        type: number
+        format: integer
+        default: 0
+        example: 0
+        minimum: 0
+        maximum: 360
+        exclusiveMinimum: false
+        exclusiveMaximum: true
+      arcDegrees:
+        description: The angle of the pie arc in degrees.
+        type: number
+        format: integer
+        default: 360
+        example: 360
+        minimum: 0
+        maximum: 360
+        exclusiveMinimum: true
+        exclusiveMaximum: false
+      pieLabelsOutside:
+        description: To show the pie chart labels outside the pie with leaders or inside.
+        type: boolean
+        default: true
+
+  MultibarChartConfig:
+    type: object
+    required:
+      - type
+    properties:
+      type:
+        description: The chart model type.
+        type: string
+        default: multibar
+      vertical:
+        description: To set a horizontal or vertical bar type.
+        type: boolean
+        default: true
+      allowScroll:
+        description: Whether to allow the bar chart to scroll.
+        type: boolean
+        default: true
+      hideEmptyGroups:
+        description: If a bar chart group has no values or all values are zero then hide group.
+        type: boolean
+        default: true
+      xDomain:
+        description: The limits of the chart x domain.
+        type: array
+        minItems: 2
+        maxItems: 2
+        items:
+          type: number
+      yDomain:
+        description: The limits of the chart y domain.
+        type: array
+        minItems: 2
+        maxItems: 2
+        items:
+          type: number
+      forceX:
+        description: Values that must exist in x range.
+        type: array
+        items:
+          type: number
+      forceY:
+        description: Values that must exist in y range.
+        type: array
+        items:
+          type: number
+      rotateTicks:
+        description: Whether to allow ticks to rotate on x axis.
+        type: boolean
+        default: true
+      reduceXTicks:
+        description: Whether to reduce the number of x axis ticks.
+        type: boolean
+        default: true
+      staggerTicks:
+        description: Whether to allow ticks to stagger on x axis.
+        type: boolean
+        default: true
+      wrapTicks:
+        description: Whether to allow ticks to wrap on x axis.
+        type: boolean
+        default: true
+      clipEdge:
+        description: Whether to clip the chart model to the inner margins.
+        type: boolean
+        default: true
+      nice:
+        description: Whether to round the x axis values to closest integer.
+        type: boolean
+        default: true
+      stacked:
+        description: Whether to stack or cluster the data groups.
+        type: boolean
+        default: true
+      showValues:
+        description: Where to place the on bar chart values.
+        type: string
+        default: middle
+        enum:
+        - top
+        - middle
+        - bottom
+        - total
+        - end
+
+  LineChartConfig:
+    type: object
+    required:
+      - type
+    properties:
+      type:
+        description: The chart model type.
+        type: string
+        default: line
+      xDomain:
+        description: The limits of the chart x domain.
+        type: array
+        minItems: 2
+        maxItems: 2
+        items:
+          type: number
+      yDomain:
+        description: The limits of the chart y domain.
+        type: array
+        minItems: 2
+        maxItems: 2
+        items:
+          type: number
+      forceX:
+        description: Values that must exist in x range.
+        type: array
+        items:
+          type: number
+      forceY:
+        description: Values that must exist in y range.
+        type: array
+        items:
+          type: number
+      rotateTicks:
+        description: Whether to allow ticks to rotate on x axis.
+        type: boolean
+        default: true
+      reduceXTicks:
+        description: Whether to reduce the number of x axis ticks.
+        type: boolean
+        default: true
+      staggerTicks:
+        description: Whether to allow ticks to stagger on x axis.
+        type: boolean
+        default: true
+      wrapTicks:
+        description: Whether to allow ticks to wrap on x axis.
+        type: boolean
+        default: true
+      clipEdge:
+        description: Whether to clip the chart model to the inner margins.
+        type: boolean
+        default: true
+      nice:
+        description: Whether to round the x axis values to closest integer.
+        type: boolean
+        default: true
+
+  FunnelChartConfig:
+    type: object
+    required:
+      - type
+    properties:
+      type:
+        description: The chart model type.
+        type: string
+        default: funnel
+      xDomain:
+        description: The limits of the chart x domain.
+        type: array
+        minItems: 2
+        maxItems: 2
+        items:
+          type: number
+      yDomain:
+        description: The limits of the chart y domain.
+        type: array
+        minItems: 2
+        maxItems: 2
+        items:
+          type: number
+      forceX:
+        description: Values that must exist in x range.
+        type: array
+        items:
+          type: number
+      forceY:
+        description: Values that must exist in y range.
+        type: array
+        items:
+          type: number
+      clipEdge:
+        description: Whether to clip the chart model to the inner margins.
+        type: boolean
+        default: true
+      wrapLabels:
+        description: Whether to allow funnel labels to wrap.
+        type: boolean
+        default: true
+
+  #--------------------------------------
+  # Request definitions 
+  
+  PieConfig:
+    allOf:
+      - $ref: '#/definitions/AbstractChartConfig'
+      - $ref: '#/definitions/PieChartConfig'
+  PieData:
+    type: object
+    description: Don't let this double 'properties' throw you off. DataProperties has an object property called 'properties' which has the properties of...
+    properties:
+      properties:
+        $ref: '#/definitions/DataProperties'
+      data:
+        $ref: '#/definitions/ValueValues'
+  PieChartRequest:
+    description: POST parameters for pie chart type.
+    type: object
+    properties:
+      chartConfig:
+        $ref: '#/definitions/PieConfig'
+      reportData:
+        $ref: '#/definitions/PieData'
+
+  MultibarConfig:
+    allOf:
+      - $ref: '#/definitions/AbstractChartConfig'
+      - $ref: '#/definitions/MultibarChartConfig'
+  MultibarData:
+    description: The data meta attributes and report data array
+    type: object
+    properties:
+      properties:
+        $ref: '#/definitions/DataProperties'
+      data:
+        $ref: '#/definitions/ObjectValues'
+  MultibarChartRequest:
+    description: POST parameters.
+    type: object
+    properties:
+      chartConfig:
+        $ref: '#/definitions/MultibarConfig'
+      reportData:
+        $ref: '#/definitions/MultibarData'
+
+  LineConfig:
+    allOf:
+      - $ref: '#/definitions/AbstractChartConfig'
+      - $ref: '#/definitions/LineChartConfig'
+  LineData:
+    description: The data meta attributes and report data array
+    type: object
+    properties:
+      properties:
+        $ref: '#/definitions/DataProperties'
+      data:
+        $ref: '#/definitions/ArrayValues'
+  LineChartRequest:
+    description: POST parameters.
+    type: object
+    properties:
+      chartConfig:
+        $ref: '#/definitions/LineConfig'
+      reportData:
+        $ref: '#/definitions/LineData'
+
+  FunnelConfig:
+    allOf:
+      - $ref: '#/definitions/AbstractChartConfig'
+      - $ref: '#/definitions/FunnelChartConfig'
+  FunnelData:
+    description: The data meta attributes and report data array
+    type: object
+    properties:
+      properties:
+        $ref: '#/definitions/DataProperties'
+      data:
+        $ref: '#/definitions/ValueValues'
+  FunnelChartRequest:
+    description: POST parameters.
+    type: object
+    properties:
+      chartConfig:
+        $ref: '#/definitions/FunnelConfig'
+      reportData:
+        $ref: '#/definitions/FunnelData'
+
+  #--------------------------------------
+  # Response definitions 
+
+  ImageResponse:
+    description: Base64 encoded image.
+    type: string
+    format: byte
+    example: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAilBMVEXo6epZWlzo6ero6epZWlxZWlzo6ero6ero6epZWlxZWlzo6epZWlzmHiVZWlzo6ero6ero6ermHiXmHiVZWlzmHiXmHiXo6ermHiXo6ermHiVZWlxZWlxZWlxZWlzmHiXo6ermHiXmHiXmHiXmHiXmHiXmHiVZWlxZWlzo6eoAAADmHiVZWlzo6eqPQJV9AAAAK3RSTlOAgI9w249Qx7MwcKCzUFAw2xCPx+4ws+7bIHAgYBCggGBAoO4QIGDHQEAAki8vsQAAAs1JREFUeNrt2+lu4kAQBGBzmiuYw0AAnxibw8P7v94qu0ChNCCld4786HqBfFUiMKCxd3ac/wKUeZWmee4IUKZFfc3ywz6gWtaPKdLSJqCc1QhmsAWo5vXzFLOSBeCXp5lXPAC/PM2sNAVY7GqEOQMfsK8+a0TjDJ7e8shntecDaHlWdgsNAFKeMwMfsN+Q8owZ2ICclDcwg/e6fFFryy5/DTBaHik2+xcARnmtM1DAx7JGzM/g0VMGYmMGz055enahgD3Km84yfwIoa5upKCC1Cpg7X8D1a8Dpf8GmdPs+8CvfCbv+xc+mNj8LjkmokvgG6F7+Zniy9Gm4HYTqK4cbwL9cs2pNzZ8HxiN1S/8KuCCYwcyJaNsIFXIkAAMz7Bak/DsAnWGx01z+PQAzrPV+L4hQ/j0A6XXJDOzyHUVDAXQGb63ju2F0UIoBwAzcb8cozwNgBs7vAyjPB2CGjPULSR/luQCkSWd4Xz6O2grhAxA/+8GvZP0Ef4UBYMxQpKS8bgCdIS0Y5dkAzBC8+a04HqC8bgAyuZ5dSI4obwaADDEDyodKWQBgBlreDgCEhxU6StkDIPf/ykS5AUxuBx1lF4Bk/15+ygkAE0TWAQheAY4Apy/AQQACEIAABCAAAQhAAAIQgAAEIAABCEAAAhCAAAQgADZg/FsW6LkCbK+AzBGgfb9JtXIDGN8BJyeA5OEyW+YAMIofAOdgYhvQ+H6d7zS0CGhH8ZP7hNNsYgfQ2b680BgMjQMO0RkBgDEDALzyFIAZzABQngI4MwDAKE8AJEFTK2A0ZjxjkvmaAGFjy3zKZt3kAWh5BgAzMAEozwRgBg4A5fkApNtjAMJBrPFpu7W3+hkgOWp+3A8zUACjPAeAGSiAltcOwAwUQMobACDT1urbVabRQ/m+jcd+cXZZ4RoPThnmAZghwE0ulDcLQIIWrhX2B0eUZwCc5g+jQcBNTYxVtgAAAABJRU5ErkJggg==
+
+  Error:
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string

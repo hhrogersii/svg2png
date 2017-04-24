@@ -1,0 +1,9 @@
+FROM mkungla/swagger-editor-nginx:0.9.1-alpha1
+COPY docker/mc_tools/etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
+COPY docker/mc_tools/var/www/localhost/htdocs/config/defaults.json /var/www/localhost/htdocs/config/defaults.json
+
+# Pass REPORT2CHART env var to php-fpm
+USER root
+RUN echo 'env[REPORT2CHART_SVC] = $REPORT2CHART_SVC' >> /etc/php7/php-fpm.d/www.conf
+
+USER docker
