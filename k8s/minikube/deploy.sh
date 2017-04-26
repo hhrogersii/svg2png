@@ -312,11 +312,11 @@ check_dir()
     # folder is mounted. This is needed for any pods which mount hostPath on the k8s
     # node (vm) so it becomes possible to mount directly from the local system.
 
-    if [ "$OSTYPE" == "darwin" ]; then
-        ROOT_DIR_VM=$ROOT_DIR
-    else
-        ROOT_DIR_VM=$(echo $ROOT_DIR | sed -e "s~/home/~/hosthome/~")
-    fi
+    # On Linux systems /home is mountd to /hosthome inside the VM
+    ROOT_DIR_VM=$(echo $ROOT_DIR | sed -e "s~/home/~/hosthome/~")
+
+    # Set write permissions for swagger-editor
+    chmod o+w $ROOT_DIR/swagger/swagger.yaml
 
     echo "done"
 }
