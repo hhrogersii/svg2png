@@ -71,8 +71,7 @@ create_service()
 
 expose_service()
 {
-    # TODO: handle ingress for staging
-    echo "Exposing service through ingres"
+    $KUBECTL --namespace $NS create -f k8s/pipeline/report2chart-ingress.yaml
 }
 
 update_service()

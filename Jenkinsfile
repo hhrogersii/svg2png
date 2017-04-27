@@ -72,7 +72,6 @@ podTemplate(
             container(name:'kubectl') {
                 sh """
                 kubectl version
-                kubectl get namespace | grep report2chart
                 ./k8s/pipeline/deploy.sh qa ${qaNs} ${version} ${imagePhantomjs} ${imageNginx}
                 """
             }
