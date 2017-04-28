@@ -15,42 +15,25 @@ if (isset($headers['CHART_CONFIG'])) {
   // If page is called by service screen capture with header variables
 
   $chartConfig = json_decode($headers['CHART_CONFIG']);
-  $reportDatum = $headers['REPORT_DATUM'];
+  $reportDatum = json_decode($headers['REPORT_DATUM']);
 
 } else {
   // else define variables for testing
 
-  $chartConfig = json_decode(json_encode(array(
-    'type' => 'pie',
-    'width' => 720,
-    'height' => 480,
-    'zoom' => 1,
-    'direction' => 'ltr',
-    'showTitle' => true,
-    'showLegend' => true,
-    'showLabels' => true,
-    'tooltips' => false,
-    'donut' => true,
-    'donutRatio' => 0.5,
-    'hole' => 10,
-    'maxRadius' => 250,
-    'minRadius' => 100,
-    'rotateDegrees' => 0,
-    'arcDegrees' => 360,
-    'colorData' => 'default',
-  )));
+  $post = file_get_contents('post.json');
+  $json = json_decode($post);
 
-  $reportDatum = file_get_contents('pie_data.json');
-
+  $chartConfig = $json->CHART_CONFIG;
+  $reportDatum = $json->REPORT_DATUM;
 }
 ?>
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=600" />
+  <meta name="viewport" content="width=720" />
   <title>Chart</title>
-  <link rel="stylesheet" type="text/css" href="../resources/nvd3_print.css" />
+  <link rel="stylesheet" type="text/css" href="../service/resources/sucrose.min.css" />
   <style>
     body {
       background-color: #eef5ff;
@@ -63,21 +46,22 @@ if (isset($headers['CHART_CONFIG'])) {
 </head>
 <body>
 
-<div id="chart_container" class="nv-chart">
+<div id="chart_container" class="sc-chart">
   <svg></svg>
 </div>
 
-<script src="../resources/d3.min.js"></script>
-<script src="../resources/nv.d3.min.js"></script>
+<script src="../service/resources/d3v4.min.js"></script>
+<script src="../service/resources/d3fc-rebind.min.js"></script>
+<script src="../service/resources/sucrose.min.js"></script>
 
 <script type="text/javascript">
 var config = <?php echo json_encode($chartConfig); ?>;
-var datum = <?php echo $reportDatum; ?>;
+var datum = <?php echo json_encode($reportDatum); ?>;
 
 window.onload = function() {
     // Define chart model & class name
-    var model = nv.models[config.type + 'Chart']();
-    var classname = 'nv-chart-' + config.type;
+    var model = sucrose.charts[config.type + 'Chart']();
+    var classname = 'sc-chart-' + config.type;
 
     // Apply configuration settings
     // Get method names from config keys
@@ -91,13 +75,13 @@ window.onload = function() {
     }
 
     // Add chart type class to container
-    d3.select('#chart_container')
+    d3v4.select('#chart_container')
         .style('width', config.width + 'px')
         .style('height', config.height + 'px')
         .classed(classname, true);
 
     // Bind data to svg and call model
-    d3.select('#chart_container svg')
+    d3v4.select('#chart_container svg')
       .datum(datum)
       .call(model);
   };

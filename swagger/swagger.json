@@ -10,22 +10,13 @@
     ],
     "basePath": "/api/v1",
     "consumes": [
-        "application/json"
+        "text/plain"
     ],
     "produces": [
         "text/plain"
     ],
     "paths": {
         "/pie": {
-            "options": {
-                "summary": "Respond to options preflight",
-                "description": "This is needed so that CORS will work",
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            },
             "post": {
                 "summary": "Capture pie chart image.",
                 "description": "This entry point is specically for the pie chart type.",
@@ -59,15 +50,6 @@
             }
         },
         "/multibar": {
-            "options": {
-                "summary": "Respond to options preflight",
-                "description": "This is needed so that CORS will work",
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            },
             "post": {
                 "summary": "Capture multibar chart image.",
                 "description": "This entry point is specically for the multibar chart type.",
@@ -101,15 +83,6 @@
             }
         },
         "/line": {
-            "options": {
-                "summary": "Respond to options preflight",
-                "description": "This is needed so that CORS will work",
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            },
             "post": {
                 "summary": "Capture line chart image.",
                 "description": "This entry point is specically for the line chart type.",
@@ -143,15 +116,6 @@
             }
         },
         "/funnel": {
-            "options": {
-                "summary": "Respond to options preflight",
-                "description": "This is needed so that CORS will work",
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            },
             "post": {
                 "summary": "Capture funnel chart image.",
                 "description": "This entry point is specically for the funnel chart type.",

@@ -12,7 +12,7 @@ schemes:
   - http
 basePath: /api/v1
 consumes:
-  - application/json
+  - text/plain
 produces:
   - text/plain
 
@@ -22,12 +22,6 @@ produces:
 
 paths:
   /pie:
-    options:
-      summary: Respond to options preflight
-      description: This is needed so that CORS will work
-      responses:
-        200:
-          description: OK
     post:
       summary: Capture pie chart image.
       description: This entry point is specically for the pie chart type.
@@ -50,12 +44,6 @@ paths:
             $ref: '#/definitions/Error'
 
   /multibar:
-    options:
-      summary: Respond to options preflight
-      description: This is needed so that CORS will work
-      responses:
-        200:
-          description: OK
     post:
       summary: Capture multibar chart image.
       description: This entry point is specically for the multibar chart type.
@@ -78,12 +66,6 @@ paths:
             $ref: '#/definitions/Error'
 
   /line:
-    options:
-      summary: Respond to options preflight
-      description: This is needed so that CORS will work
-      responses:
-        200:
-          description: OK
     post:
       summary: Capture line chart image.
       description: This entry point is specically for the line chart type.
@@ -106,12 +88,6 @@ paths:
             $ref: '#/definitions/Error'
 
   /funnel:
-    options:
-      summary: Respond to options preflight
-      description: This is needed so that CORS will work
-      responses:
-        200:
-          description: OK
     post:
       summary: Capture funnel chart image.
       description: This entry point is specically for the funnel chart type.
@@ -140,8 +116,8 @@ paths:
 definitions:
 
   #--------------------------------------
-  # Report data definitions 
-  
+  # Report data definitions
+
   DataProperties:
     description: Metadata about the data being visualized.
     type: object
@@ -235,8 +211,8 @@ definitions:
 
 
   #--------------------------------------
-  # Chart configuration definitions 
-  
+  # Chart configuration definitions
+
   AbstractChartConfig:
     description: Chart configuration method names and values for all chart types.
     type: object
@@ -592,8 +568,8 @@ definitions:
         default: true
 
   #--------------------------------------
-  # Request definitions 
-  
+  # Request definitions
+
   PieConfig:
     allOf:
       - $ref: '#/definitions/AbstractChartConfig'
@@ -679,7 +655,7 @@ definitions:
         $ref: '#/definitions/FunnelData'
 
   #--------------------------------------
-  # Response definitions 
+  # Response definitions
 
   ImageResponse:
     description: Base64 encoded image.

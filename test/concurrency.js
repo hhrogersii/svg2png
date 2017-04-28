@@ -6,7 +6,7 @@
 // https://github.com/alexfernandez/loadtest
 var loadtest = require('loadtest');
 
-var body = require('../resources/post.json');
+var body = require('post.json');
 var options = {
         url: '%%URL%%',
         maxRequests: 500,

@@ -6,8 +6,8 @@ var url = 'resources/chart.html';
 
 var chartRender = function(config, datum) {
         // Define chart model & class name
-        var model = nv.models[config.type + 'Chart']();
-        var classname = 'nv-chart-' + config.type;
+        var model = sucrose.models[config.type + 'Chart']();
+        var classname = 'sc-chart-' + config.type;
 
         // Apply configuration settings
         // Get method names from config keys
@@ -21,13 +21,13 @@ var chartRender = function(config, datum) {
         }
 
         // Add chart type class to container
-        d3.select('#chart_container')
+        d3v4.select('#chart_container')
             .style('width', config.width + 'px')
             .style('height', config.height + 'px')
             .classed(classname, true);
 
         // Bind data to svg and call model
-        d3.select('#chart_container svg')
+        d3v4.select('#chart_container svg')
             .datum(datum)
             .call(model);
     };

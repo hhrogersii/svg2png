@@ -1,6 +1,17 @@
 SHELL := /bin/bash
 
-.PHONY: minikube-init minikube-cleanup minikube-update minikube-status
+.PHONY: phantomjs-server docker-build docker-run minikube-init minikube-cleanup minikube-update minikube-status
+
+phantomjs-server:
+	phantomjs service/service.js
+
+docker-build:
+	docker build -t report2chart-dock .
+
+docker-run:
+	docker run -p 8910:8910 report2chart-dock
+
+# don't forget to minikube start
 
 minikube-init: minikube-cleanup
 	k8s/minikube/deploy.sh init
