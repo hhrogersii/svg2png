@@ -21,10 +21,9 @@ var options = {
         },
         contentType: 'text/plain;charset=UTF-8'
     };
-loadtest.loadTest(options, function(error, result)
-{
-    if (error)
-    {
+
+loadtest.loadTest(options, function(error, result) {
+    if (error) {
         return console.error('Got an error: %s', error);
     }
     console.log('Tests run successfully');

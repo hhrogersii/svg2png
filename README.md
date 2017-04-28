@@ -78,10 +78,10 @@ cd /report2service
 wget https://github.com/swagger-api/swagger-editor/releases/download/v2.10.5/swagger-editor.zip
 unzip swagger-editor.zip
 rm swagger-editor.zip
-open http://localhost/report2chart/swagger-editor/?url=../swagger.yaml
+open http://localhost/report2chart/swagger-editor/?import=../swagger.yaml#!/
 ```
 
-After installation the editor can be launched at: [/report2chart/swagger-editor/?url=../swagger.yaml#!/](./swagger-editor/?url=../swagger.yaml#!/)
+After installation the editor can be launched at: [/report2chart/swagger-editor/?import=../swagger.yaml#!/](./swagger-editor/?import=../swagger.yaml#!/)
 
 <img src="readme/swagger-editor.png" width="680">
 

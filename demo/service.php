@@ -39,13 +39,11 @@
     // Use for verification of phantomjs script
     // var url = 'http://localhost:8910/';
     // User for verification of docker image
-    var url = 'http://127.0.0.1:8910/v1/pie';
+    // var url = 'http://127.0.0.1:8910/v1/pie';
     // Use for verification of api specification
     //
     // Use for verification of minikube externally
-    // var url = 'http://192.168.99.100:30604/api/v1/pie';
-    // Use for verification of minikube internally
-    // var url = '<?php echo getenv('REPORT2CHART_SVC'); ?>';
+    var url = 'http://192.168.99.100:30604/api/v1/pie';
 
     var xhr = new XMLHttpRequest();
     xhr.open('POST', url, true);

@@ -120,7 +120,8 @@ definitions:
 
   DataProperties:
     description: Metadata about the data being visualized.
-    type: object
+    required:
+      - title
     properties:
       title:
         description: Explanitory statement about content of chart.
@@ -163,7 +164,6 @@ definitions:
     description: Data series values represented as arrays of objects.
     type: array
     items:
-      type: object
       properties:
         key:
           type: string
@@ -171,7 +171,6 @@ definitions:
         values:
           type: array
           items:
-            type: object
             properties:
               x:
                 $ref: '#/definitions/Dimension'
@@ -182,7 +181,6 @@ definitions:
     description: Data series values represented as array of arrays.
     type: array
     items:
-      type: object
       properties:
         key:
           type: string
@@ -201,7 +199,6 @@ definitions:
     description: Data series value represented as a single value.
     type: array
     items:
-      type: object
       properties:
         key:
           type: string
@@ -215,7 +212,6 @@ definitions:
 
   AbstractChartConfig:
     description: Chart configuration method names and values for all chart types.
-    type: object
     properties:
       id:
         description: Unique identifier for the chart.
@@ -224,8 +220,8 @@ definitions:
       width:
         description: The width of the chart container.
         type: integer
-        default: 960
-        example: 960
+        default: 720
+        example: 720
       height:
         description: The height of the chart container.
         type: integer
@@ -246,7 +242,6 @@ definitions:
         default: default
       margin:
         description: Sets the space around the outside of the chart.
-        type: object
         properties:
           top:
             type: integer
@@ -278,10 +273,8 @@ definitions:
         default: false
       strings:
         description: Map of the strings to use for common labels.
-        type: object
         properties:
           legend:
-            type: object
             properties:
               close:
                 type: string
@@ -290,7 +283,6 @@ definitions:
                 type: string
                 default: Show legend
           controls:
-            type: object
             properties:
               close:
                 type: string
@@ -305,12 +297,11 @@ definitions:
         description: To render chart strings in LTR or RTL.
         type: string
         enum:
-          - LTR
-          - RTL
-        default: LTR
+          - ltr
+          - rtl
+        default: ltr
 
   PieChartConfig:
-    type: object
     required:
       - type
     properties:
@@ -318,6 +309,7 @@ definitions:
         description: The chart model type.
         type: string
         default: pie
+        example: pie
       donut:
         description: To show the pie chart with a hole in the middle.
         type: boolean
@@ -326,7 +318,8 @@ definitions:
         description: The ratio of the hole diameter to the pie diameter.
         type: number
         format: float
-        default: 0.5
+        default: 0.447
+        example: 0.5
         minimum: 0
         maximum: 1
         exclusiveMinimum: true
@@ -335,7 +328,7 @@ definitions:
         description: The text to render inside the donut hole.
         type: string
         default: ''
-        example: '10'
+        example: 10%
       showLabels:
         description: To show the chart labels or not.
         type: boolean
@@ -384,7 +377,6 @@ definitions:
         default: true
 
   MultibarChartConfig:
-    type: object
     required:
       - type
     properties:
@@ -392,6 +384,7 @@ definitions:
         description: The chart model type.
         type: string
         default: multibar
+        example: multibar
       vertical:
         description: To set a horizontal or vertical bar type.
         type: boolean
@@ -468,7 +461,6 @@ definitions:
         - end
 
   LineChartConfig:
-    type: object
     required:
       - type
     properties:
@@ -476,6 +468,7 @@ definitions:
         description: The chart model type.
         type: string
         default: line
+        example: line
       xDomain:
         description: The limits of the chart x domain.
         type: array
@@ -526,7 +519,6 @@ definitions:
         default: true
 
   FunnelChartConfig:
-    type: object
     required:
       - type
     properties:
@@ -534,6 +526,7 @@ definitions:
         description: The chart model type.
         type: string
         default: funnel
+        example: funnel
       xDomain:
         description: The limits of the chart x domain.
         type: array
@@ -575,7 +568,6 @@ definitions:
       - $ref: '#/definitions/AbstractChartConfig'
       - $ref: '#/definitions/PieChartConfig'
   PieData:
-    type: object
     description: Don't let this double 'properties' throw you off. DataProperties has an object property called 'properties' which has the properties of...
     properties:
       properties:
@@ -584,7 +576,6 @@ definitions:
         $ref: '#/definitions/ValueValues'
   PieChartRequest:
     description: POST parameters for pie chart type.
-    type: object
     properties:
       CHART_CONFIG:
         $ref: '#/definitions/PieConfig'
@@ -597,7 +588,6 @@ definitions:
       - $ref: '#/definitions/MultibarChartConfig'
   MultibarData:
     description: The data meta attributes and report data array
-    type: object
     properties:
       properties:
         $ref: '#/definitions/DataProperties'
@@ -605,7 +595,6 @@ definitions:
         $ref: '#/definitions/ObjectValues'
   MultibarChartRequest:
     description: POST parameters.
-    type: object
     properties:
       CHART_CONFIG:
         $ref: '#/definitions/MultibarConfig'
@@ -618,7 +607,6 @@ definitions:
       - $ref: '#/definitions/LineChartConfig'
   LineData:
     description: The data meta attributes and report data array
-    type: object
     properties:
       properties:
         $ref: '#/definitions/DataProperties'
@@ -626,7 +614,6 @@ definitions:
         $ref: '#/definitions/ArrayValues'
   LineChartRequest:
     description: POST parameters.
-    type: object
     properties:
       CHART_CONFIG:
         $ref: '#/definitions/LineConfig'
@@ -639,7 +626,6 @@ definitions:
       - $ref: '#/definitions/FunnelChartConfig'
   FunnelData:
     description: The data meta attributes and report data array
-    type: object
     properties:
       properties:
         $ref: '#/definitions/DataProperties'
@@ -647,7 +633,6 @@ definitions:
         $ref: '#/definitions/ValueValues'
   FunnelChartRequest:
     description: POST parameters.
-    type: object
     properties:
       CHART_CONFIG:
         $ref: '#/definitions/FunnelConfig'
