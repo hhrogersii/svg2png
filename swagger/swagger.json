@@ -743,10 +743,10 @@
             "description": "POST parameters for pie chart type.",
             "type": "object",
             "properties": {
-                "chartConfig": {
+                "CHART_CONFIG": {
                     "$ref": "#/definitions/PieConfig"
                 },
-                "reportData": {
+                "REPORT_DATUM": {
                     "$ref": "#/definitions/PieData"
                 }
             }
@@ -777,10 +777,10 @@
             "description": "POST parameters.",
             "type": "object",
             "properties": {
-                "chartConfig": {
+                "CHART_CONFIG": {
                     "$ref": "#/definitions/MultibarConfig"
                 },
-                "reportData": {
+                "REPORT_DATUM": {
                     "$ref": "#/definitions/MultibarData"
                 }
             }
@@ -811,10 +811,10 @@
             "description": "POST parameters.",
             "type": "object",
             "properties": {
-                "chartConfig": {
+                "CHART_CONFIG": {
                     "$ref": "#/definitions/LineConfig"
                 },
-                "reportData": {
+                "REPORT_DATUM": {
                     "$ref": "#/definitions/LineData"
                 }
             }
@@ -845,10 +845,10 @@
             "description": "POST parameters.",
             "type": "object",
             "properties": {
-                "chartConfig": {
+                "CHART_CONFIG": {
                     "$ref": "#/definitions/FunnelConfig"
                 },
-                "reportData": {
+                "REPORT_DATUM": {
                     "$ref": "#/definitions/FunnelData"
                 }
             }
